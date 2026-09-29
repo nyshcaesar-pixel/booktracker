@@ -1,0 +1,8322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BookStock — Inventory Management</title>
+
+<style>
+
+/* =========================================================
+   BOOKSTOCK V2
+   ========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #625bf6;
+    --primary-dark: #4c45d3;
+    --primary-soft: #efeeff;
+
+    --bg: #f6f7fb;
+    --card: #ffffff;
+
+    --sidebar: #12131a;
+    --sidebar-hover: #20222c;
+
+    --text: #1d1f2c;
+    --muted: #7d8191;
+
+    --border: #e8e9ef;
+
+    --success: #18a66a;
+    --success-soft: #e9f8f1;
+
+    --warning: #e59b17;
+    --warning-soft: #fff5df;
+
+    --danger: #dc4c55;
+    --danger-soft: #ffebed;
+
+    --info: #3b82f6;
+    --info-soft: #eaf2ff;
+
+    --radius: 16px;
+
+    --shadow-sm:
+        0 4px 15px rgba(22, 26, 50, .05);
+
+    --shadow:
+        0 15px 40px rgba(22, 26, 50, .08);
+
+    --shadow-lg:
+        0 30px 80px rgba(22, 26, 50, .15);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: var(--bg);
+    color: var(--text);
+}
+
+
+/* =========================================================
+   BUTTONS / INPUT GLOBAL
+   ========================================================= */
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button,
+input,
+select,
+.nav-item,
+.stat-card,
+.panel {
+    transition:
+        .2s ease;
+}
+
+
+/* =========================================================
+   LOGIN SCREEN
+   ========================================================= */
+
+.login-screen {
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-columns:
+        minmax(400px, 1.1fr)
+        minmax(400px, .9fr);
+
+    background: white;
+}
+
+
+/* LEFT LOGIN */
+
+.login-showcase {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 100vh;
+
+    padding: 65px;
+
+    color: white;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(137, 130, 255, .55),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 90% 90%,
+            rgba(91, 72, 246, .40),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            #171728,
+            #24204e 55%,
+            #4038a0
+        );
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.login-showcase::before {
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    right: -230px;
+    top: -160px;
+}
+
+.login-showcase::after {
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    left: -170px;
+    bottom: -150px;
+}
+
+.login-brand {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    font-weight: 800;
+    font-size: 22px;
+}
+
+.login-brand-icon {
+    width: 43px;
+    height: 43px;
+
+    border-radius: 12px;
+
+    display: grid;
+    place-items: center;
+
+    background:
+        rgba(255,255,255,.12);
+
+    border:
+        1px solid rgba(255,255,255,.13);
+
+    backdrop-filter:
+        blur(10px);
+}
+
+.showcase-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 600px;
+}
+
+.showcase-tag {
+    display: inline-flex;
+
+    padding: 7px 12px;
+
+    margin-bottom: 20px;
+
+    border-radius: 30px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    border:
+        1px solid rgba(255,255,255,.12);
+}
+
+.showcase-content h1 {
+    font-size:
+        clamp(38px, 5vw, 67px);
+
+    line-height: 1.05;
+
+    letter-spacing: -2.5px;
+
+    margin-bottom: 22px;
+}
+
+.showcase-content h1 span {
+    color: #aaa5ff;
+}
+
+.showcase-content p {
+    max-width: 500px;
+
+    color:
+        rgba(255,255,255,.66);
+
+    font-size: 15px;
+
+    line-height: 1.8;
+}
+
+.showcase-features {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    gap: 25px;
+
+    color:
+        rgba(255,255,255,.62);
+
+    font-size: 12px;
+}
+
+.showcase-features span {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+
+/* RIGHT LOGIN */
+
+.login-area {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 50px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 430px;
+
+    animation:
+        loginAppear .55s ease;
+}
+
+@keyframes loginAppear {
+    from {
+        opacity: 0;
+        transform:
+            translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0);
+    }
+}
+
+.login-box h2 {
+    font-size: 31px;
+
+    letter-spacing: -.7px;
+
+    margin-bottom: 9px;
+}
+
+.login-subtitle {
+    color: var(--muted);
+
+    line-height: 1.6;
+
+    margin-bottom: 34px;
+}
+
+
+/* FORM */
+
+.field {
+    margin-bottom: 19px;
+}
+
+.field label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: .4px;
+
+    color: #515466;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.input-wrap input,
+.field input,
+.field select {
+    width: 100%;
+
+    height: 49px;
+
+    padding:
+        0 15px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 11px;
+
+    background:
+        #fafbfc;
+
+    outline: none;
+
+    color:
+        var(--text);
+}
+
+.input-wrap input {
+    padding-left:
+        43px;
+}
+
+.input-icon {
+    position: absolute;
+
+    left: 15px;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    font-size: 15px;
+
+    opacity: .55;
+}
+
+.password-toggle {
+    position: absolute;
+
+    right: 13px;
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    border: none;
+    background: none;
+
+    opacity: .55;
+}
+
+.input-wrap input:focus,
+.field input:focus,
+.field select:focus {
+    background: white;
+
+    border-color:
+        var(--primary);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(98,91,246,.09);
+}
+
+.login-options {
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    margin:
+        -3px 0 22px;
+
+    font-size: 12px;
+
+    color:
+        var(--muted);
+}
+
+.remember {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+}
+
+.login-button {
+    width: 100%;
+
+    height: 50px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    color: white;
+
+    font-weight: 800;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #766ef9
+        );
+
+    box-shadow:
+        0 10px 25px
+        rgba(98,91,246,.22);
+}
+
+.login-button:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 15px 30px
+        rgba(98,91,246,.30);
+}
+
+.login-button:active {
+    transform:
+        scale(.98);
+}
+
+.login-error {
+    display: none;
+
+    margin-bottom: 17px;
+
+    padding: 12px 14px;
+
+    border-radius: 9px;
+
+    background:
+        var(--danger-soft);
+
+    color:
+        var(--danger);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.login-divider {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    margin:
+        25px 0;
+
+    color:
+        var(--muted);
+
+    font-size: 11px;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: "";
+
+    height: 1px;
+    flex: 1;
+
+    background:
+        var(--border);
+}
+
+.viewer-button {
+    width: 100%;
+
+    height: 48px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 11px;
+
+    background:
+        white;
+
+    font-weight: 700;
+
+    color:
+        #55596b;
+}
+
+.viewer-button:hover {
+    background:
+        #f7f7fb;
+
+    border-color:
+        #d8d9e5;
+}
+
+
+/* =========================================================
+   MAIN APP
+   ========================================================= */
+
+#app {
+    display: none;
+    min-height: 100vh;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    position: fixed;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 250px;
+
+    padding: 24px 15px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            180deg,
+            #111219,
+            #171821
+        );
+
+    z-index: 30;
+}
+
+.sidebar-brand {
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding:
+        0 12px;
+
+    margin-bottom:
+        25px;
+
+    font-size:
+        20px;
+
+    font-weight:
+        850;
+}
+
+.sidebar-brand-icon {
+    width: 37px;
+    height: 37px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius:
+        10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #8983ff
+        );
+}
+
+.sidebar-brand span {
+    color:
+        #8983ff;
+}
+
+.nav-label {
+    padding:
+        11px 13px 7px;
+
+    color:
+        #616473;
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        1.4px;
+}
+
+.nav-item {
+    width: 100%;
+
+    border: none;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding:
+        12px 14px;
+
+    margin:
+        3px 0;
+
+    border-radius:
+        10px;
+
+    color:
+        #9da0ae;
+
+    background:
+        transparent;
+
+    text-align:
+        left;
+
+    font-size:
+        13px;
+
+    font-weight:
+        600;
+}
+
+.nav-item:hover {
+    background:
+        var(--sidebar-hover);
+
+    color: white;
+
+    transform:
+        translateX(2px);
+}
+
+.nav-item.active {
+    color: white;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2a2b39,
+            #21232d
+        );
+
+    box-shadow:
+        inset 3px 0
+        var(--primary);
+}
+
+.nav-icon {
+    width: 22px;
+
+    text-align:
+        center;
+
+    font-size:
+        16px;
+}
+
+.sidebar-user {
+    position: absolute;
+
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+
+    padding:
+        13px;
+
+    border-radius:
+        12px;
+
+    background:
+        #1d1f29;
+
+    border:
+        1px solid
+        rgba(255,255,255,.04);
+}
+
+.sidebar-user-info {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+
+    margin-bottom:
+        11px;
+}
+
+.user-avatar {
+    width: 34px;
+    height: 34px;
+
+    border-radius:
+        9px;
+
+    display: grid;
+    place-items: center;
+
+    background:
+        var(--primary);
+
+    font-size:
+        12px;
+
+    font-weight:
+        800;
+}
+
+.user-info-text {
+    min-width: 0;
+    flex: 1;
+}
+
+.user-info-text strong {
+    display: block;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow:
+        ellipsis;
+
+    font-size:
+        11px;
+}
+
+.user-info-text span {
+    color:
+        #747785;
+
+    font-size:
+        9px;
+
+    text-transform:
+        uppercase;
+}
+
+.logout-btn {
+    width: 100%;
+
+    padding:
+        8px;
+
+    border: none;
+
+    border-radius:
+        8px;
+
+    background:
+        #272934;
+
+    color:
+        #ff989d;
+
+    font-size:
+        10px;
+
+    font-weight:
+        700;
+}
+
+.logout-btn:hover {
+    background:
+        #33252b;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.main {
+    margin-left:
+        250px;
+
+    min-height:
+        100vh;
+}
+
+.topbar {
+    position:
+        sticky;
+
+    top: 0;
+
+    height:
+        70px;
+
+    padding:
+        0 32px;
+
+    z-index:
+        20;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    background:
+        rgba(255,255,255,.88);
+
+    backdrop-filter:
+        blur(16px);
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.topbar-left strong {
+    display: block;
+
+    font-size:
+        13px;
+}
+
+.topbar-left span {
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+}
+
+.topbar-right {
+    display: flex;
+
+    gap: 10px;
+
+    align-items: center;
+}
+
+.role-badge {
+    padding:
+        7px 11px;
+
+    border-radius:
+        30px;
+
+    background:
+        var(--primary-soft);
+
+    color:
+        var(--primary);
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        .6px;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.content {
+    padding:
+        31px;
+}
+
+.page {
+    display: none;
+
+    animation:
+        pageIn .3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform:
+            translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0);
+    }
+}
+
+.page-header {
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-bottom:
+        25px;
+}
+
+.page-header h1 {
+    font-size:
+        27px;
+
+    letter-spacing:
+        -.7px;
+}
+
+.page-header p {
+    margin-top:
+        5px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        12px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.btn {
+    border: none;
+
+    padding:
+        10px 16px;
+
+    border-radius:
+        9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #756df8
+        );
+
+    color:
+        white;
+
+    font-size:
+        12px;
+
+    font-weight:
+        750;
+
+    box-shadow:
+        0 7px 17px
+        rgba(98,91,246,.16);
+}
+
+.btn:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 10px 23px
+        rgba(98,91,246,.23);
+}
+
+.btn-secondary {
+    background:
+        #eff0f4;
+
+    color:
+        #55596b;
+
+    box-shadow:
+        none;
+}
+
+.btn-danger {
+    background:
+        var(--danger);
+
+    box-shadow:
+        none;
+}
+
+.btn-success {
+    background:
+        var(--success);
+
+    box-shadow:
+        none;
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.stats-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:
+        16px;
+
+    margin-bottom:
+        22px;
+}
+
+.stat-card {
+    position: relative;
+
+    overflow: hidden;
+
+    min-height:
+        145px;
+
+    padding:
+        20px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius);
+
+    background:
+        white;
+
+    box-shadow:
+        var(--shadow-sm);
+}
+
+.stat-card:hover {
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        var(--shadow);
+}
+
+.stat-top {
+    display: flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    margin-bottom:
+        20px;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+
+    place-items:
+        center;
+
+    border-radius:
+        11px;
+
+    font-size:
+        18px;
+}
+
+.stat-purple {
+    background:
+        var(--primary-soft);
+}
+
+.stat-green {
+    background:
+        var(--success-soft);
+}
+
+.stat-orange {
+    background:
+        var(--warning-soft);
+}
+
+.stat-red {
+    background:
+        var(--danger-soft);
+}
+
+.stat-card p {
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        .7px;
+}
+
+.stat-card h2 {
+    margin-top:
+        6px;
+
+    font-size:
+        29px;
+}
+
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel {
+    background:
+        white;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        var(--radius);
+
+    box-shadow:
+        var(--shadow-sm);
+
+    overflow:
+        hidden;
+}
+
+.panel:hover {
+    box-shadow:
+        var(--shadow);
+}
+
+.panel-header {
+    min-height:
+        63px;
+
+    padding:
+        16px 19px;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.panel-header strong {
+    font-size:
+        13px;
+}
+
+.panel-header span {
+    display: block;
+
+    margin-top:
+        3px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+}
+
+
+/* =========================================================
+   SEARCH / FILTER
+   ========================================================= */
+
+.toolbar {
+    display: flex;
+
+    gap:
+        10px;
+
+    padding:
+        15px 18px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.search-box {
+    flex: 1;
+
+    position:
+        relative;
+}
+
+.search-box input {
+    width:
+        100%;
+
+    height:
+        40px;
+
+    padding:
+        0 13px 0 38px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        9px;
+
+    outline:
+        none;
+
+    background:
+        #fafbfc;
+
+    font-size:
+        11px;
+}
+
+.search-box span {
+    position:
+        absolute;
+
+    left:
+        13px;
+
+    top:
+        50%;
+
+    transform:
+        translateY(-50%);
+
+    opacity:
+        .5;
+}
+
+.search-box input:focus {
+    background:
+        white;
+
+    border-color:
+        var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(98,91,246,.08);
+}
+
+.filter-select {
+    min-width:
+        145px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius:
+        9px;
+
+    padding:
+        0 11px;
+
+    background:
+        #fafbfc;
+
+    color:
+        #606375;
+
+    font-size:
+        11px;
+
+    outline:
+        none;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-responsive {
+    overflow-x:
+        auto;
+}
+
+table {
+    width:
+        100%;
+
+    border-collapse:
+        collapse;
+}
+
+th {
+    padding:
+        12px 17px;
+
+    background:
+        #fafbfc;
+
+    color:
+        var(--muted);
+
+    text-align:
+        left;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        .6px;
+
+    font-weight:
+        850;
+}
+
+td {
+    padding:
+        15px 17px;
+
+    border-top:
+        1px solid var(--border);
+
+    font-size:
+        11px;
+
+    vertical-align:
+        middle;
+}
+
+tbody tr {
+    transition:
+        .15s;
+}
+
+tbody tr:hover {
+    background:
+        #fafaff;
+}
+
+.book-name {
+    font-size:
+        12px;
+
+    font-weight:
+        750;
+}
+
+.book-code {
+    margin-top:
+        3px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        9px;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.badge {
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        5px;
+
+    padding:
+        5px 8px;
+
+    border-radius:
+        20px;
+
+    font-size:
+        8px;
+
+    font-weight:
+        850;
+}
+
+.badge::before {
+    content: "";
+
+    width:
+        5px;
+
+    height:
+        5px;
+
+    border-radius:
+        50%;
+
+    background:
+        currentColor;
+}
+
+.badge-success {
+    color:
+        #168554;
+
+    background:
+        var(--success-soft);
+}
+
+.badge-warning {
+    color:
+        #a56a00;
+
+    background:
+        var(--warning-soft);
+}
+
+.badge-danger {
+    color:
+        #bc3740;
+
+    background:
+        var(--danger-soft);
+}
+
+.badge-info {
+    color:
+        #376fd4;
+
+    background:
+        var(--info-soft);
+}
+
+
+/* =========================================================
+   SMALL ACTION BUTTONS
+   ========================================================= */
+
+.action-group {
+    display:
+        flex;
+
+    gap:
+        5px;
+
+    flex-wrap:
+        wrap;
+}
+
+.action-btn {
+    border:
+        none;
+
+    padding:
+        6px 8px;
+
+    border-radius:
+        7px;
+
+    font-size:
+        9px;
+
+    font-weight:
+        750;
+}
+
+.action-btn:hover {
+    transform:
+        translateY(-1px);
+}
+
+.action-in {
+    background:
+        var(--success-soft);
+
+    color:
+        var(--success);
+}
+
+.action-out {
+    background:
+        var(--warning-soft);
+
+    color:
+        #a46a00;
+}
+
+.action-edit {
+    background:
+        var(--info-soft);
+
+    color:
+        #3971d3;
+}
+
+.action-delete {
+    background:
+        var(--danger-soft);
+
+    color:
+        var(--danger);
+}
+
+
+/* =========================================================
+   USER MANAGEMENT
+   ========================================================= */
+
+.user-cell {
+    display:
+        flex;
+
+    gap:
+        10px;
+
+    align-items:
+        center;
+}
+
+.table-avatar {
+    width:
+        32px;
+
+    height:
+        32px;
+
+    flex-shrink:
+        0;
+
+    display:
+        grid;
+
+    place-items:
+        center;
+
+    border-radius:
+        9px;
+
+    color:
+        white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #8c86ff
+        );
+
+    font-size:
+        10px;
+
+    font-weight:
+        850;
+}
+
+.user-name {
+    font-weight:
+        750;
+
+    font-size:
+        11px;
+}
+
+.username {
+    color:
+        var(--muted);
+
+    margin-top:
+        2px;
+
+    font-size:
+        9px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-bg {
+    position:
+        fixed;
+
+    inset:
+        0;
+
+    z-index:
+        100;
+
+    display:
+        none;
+
+    justify-content:
+        center;
+
+    align-items:
+        center;
+
+    padding:
+        20px;
+
+    background:
+        rgba(10,11,20,.55);
+
+    backdrop-filter:
+        blur(6px);
+}
+
+.modal {
+    width:
+        100%;
+
+    max-width:
+        500px;
+
+    max-height:
+        90vh;
+
+    overflow-y:
+        auto;
+
+    padding:
+        26px;
+
+    background:
+        white;
+
+    border-radius:
+        18px;
+
+    box-shadow:
+        var(--shadow-lg);
+
+    animation:
+        modalAppear .25s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity:
+            0;
+
+        transform:
+            translateY(15px)
+            scale(.98);
+    }
+
+    to {
+        opacity:
+            1;
+
+        transform:
+            none;
+    }
+}
+
+.modal-title {
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-start;
+
+    margin-bottom:
+        22px;
+}
+
+.modal-title h2 {
+    font-size:
+        19px;
+}
+
+.modal-title p {
+    margin-top:
+        4px;
+
+    color:
+        var(--muted);
+
+    font-size:
+        10px;
+}
+
+.close-modal {
+    width:
+        30px;
+
+    height:
+        30px;
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    background:
+        #f1f2f6;
+
+    color:
+        #656878;
+}
+
+.form-grid {
+    display:
+        grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:
+        14px;
+}
+
+.full-field {
+    grid-column:
+        1 / -1;
+}
+
+.modal-actions {
+    display:
+        flex;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        8px;
+
+    margin-top:
+        23px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty-state {
+    padding:
+        55px 20px;
+
+    text-align:
+        center;
+
+    color:
+        var(--muted);
+
+    font-size:
+        11px;
+}
+
+.empty-state div {
+    margin-bottom:
+        10px;
+
+    font-size:
+        31px;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+    position:
+        fixed;
+
+    right:
+        22px;
+
+    bottom:
+        22px;
+
+    z-index:
+        999;
+
+    min-width:
+        230px;
+
+    padding:
+        13px 16px;
+
+    border-radius:
+        10px;
+
+    color:
+        white;
+
+    background:
+        #191a22;
+
+    box-shadow:
+        var(--shadow-lg);
+
+    font-size:
+        11px;
+
+    font-weight:
+        650;
+
+    animation:
+        toastAppear .3s ease;
+}
+
+@keyframes toastAppear {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            none;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width: 1000px) {
+
+    .login-screen {
+        grid-template-columns:
+            1fr;
+    }
+
+    .login-showcase {
+        display:
+            none;
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+
+@media(max-width: 720px) {
+
+    .sidebar {
+        width:
+            70px;
+
+        padding:
+            20px 9px;
+    }
+
+    .sidebar-brand {
+        justify-content:
+            center;
+
+        padding:
+            0;
+    }
+
+    .sidebar-brand > div:last-child {
+        display:
+            none;
+    }
+
+    .nav-label {
+        display:
+            none;
+    }
+
+    .nav-item {
+        justify-content:
+            center;
+
+        padding:
+            13px 5px;
+    }
+
+    .nav-item span:last-child {
+        display:
+            none;
+    }
+
+    .sidebar-user {
+        display:
+            none;
+    }
+
+    .main {
+        margin-left:
+            70px;
+    }
+
+    .content {
+        padding:
+            20px 13px;
+    }
+
+    .topbar {
+        padding:
+            0 17px;
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+    .page-header {
+        align-items:
+            flex-start;
+
+        gap:
+            15px;
+    }
+
+    .toolbar {
+        flex-direction:
+            column;
+    }
+
+    .filter-select {
+        height:
+            40px;
+    }
+
+}
+
+
+@media(max-width: 500px) {
+
+    .login-area {
+        padding:
+            30px 20px;
+    }
+
+    .page-header {
+        flex-direction:
+            column;
+    }
+
+    .form-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+    .full-field {
+        grid-column:
+            auto;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ======================================================
+     LOGIN SCREEN
+====================================================== -->
+
+<div id="loginScreen" class="login-screen">
+
+    <!-- LEFT -->
+    <section class="login-showcase">
+
+        <div class="login-brand">
+
+            <div class="login-brand-icon">
+                📚
+            </div>
+
+            BookStock
+
+        </div>
+
+
+        <div class="showcase-content">
+
+            <div class="showcase-tag">
+                INVENTORY MANAGEMENT
+            </div>
+
+            <h1>
+                Keep every book
+                <span>accounted for.</span>
+            </h1>
+
+            <p>
+                A simple and organised inventory system
+                for tracking books, stock movements and
+                team activity — all in one place.
+            </p>
+
+        </div>
+
+
+        <div class="showcase-features">
+
+            <span>
+                ✓ Live Stock Tracking
+            </span>
+
+            <span>
+                ✓ User Roles
+            </span>
+
+            <span>
+                ✓ Activity History
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- RIGHT -->
+    <section class="login-area">
+
+        <div class="login-box">
+
+            <h2>Welcome back</h2>
+
+            <p class="login-subtitle">
+                Enter your account details to access
+                BookStock.
+            </p>
+
+
+            <div id="loginError"
+                 class="login-error">
+
+                Incorrect username or password.
+
+            </div>
+
+
+            <div class="field">
+
+                <label>USERNAME</label>
+
+                <div class="input-wrap">
+
+                    <span class="input-icon">
+                        👤
+                    </span>
+
+                    <input
+                        id="loginUsername"
+                        type="text"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>PASSWORD</label>
+
+                <div class="input-wrap">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+                    <input
+                        id="loginPassword"
+                        type="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        onkeydown="
+                            if(event.key === 'Enter'){
+                                userLogin();
+                            }
+                        "
+                    >
+
+                    <button
+                        class="password-toggle"
+                        type="button"
+                        onclick="togglePassword()"
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="login-options">
+
+                <label class="remember">
+
+                    <input
+                        id="rememberLogin"
+                        type="checkbox"
+                    >
+
+                    Remember me
+
+                </label>
+
+            </div>
+
+
+            <button
+                class="login-button"
+                onclick="userLogin()"
+            >
+                Sign In →
+            </button>
+
+            <div style="
+    text-align:center;
+    margin-top:18px;
+    font-size:12px;
+    color:var(--muted);
+">
+    Don't have an account?
+
+    <button
+        type="button"
+        onclick="openSignupModal()"
+        style="
+            border:none;
+            background:none;
+            color:var(--primary);
+            font-weight:800;
+            cursor:pointer;
+        "
+    >
+        Create account
+    </button>
+</div>
+
+            <div class="login-divider">
+                OR
+            </div>
+
+
+            <button
+                class="viewer-button"
+                onclick="viewerLogin()"
+            >
+                👀 Continue as Viewer
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+
+<!-- ======================================================
+     APPLICATION
+====================================================== -->
+
+<div id="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-brand-icon">
+                📚
+            </div>
+
+            <div>
+                Book<span>Stock</span>
+            </div>
+
+        </div>
+
+
+        <div class="nav-label">
+            WORKSPACE
+        </div>
+
+
+        <button
+            class="nav-item active"
+            data-page="dashboard"
+            data-permission="dashboard"
+            onclick="
+                showPage('dashboard',this)
+            "
+        >
+
+            <span class="nav-icon">
+                ▦
+            </span>
+
+            <span>Dashboard</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="books"
+            onclick="
+                showPage('books',this)
+            "
+        >
+
+            <span class="nav-icon">
+                📚
+            </span>
+
+            <span>Books</span>
+
+        </button>
+
+
+        <button
+            class="nav-item"
+            data-page="history"
+            data-permission="history"
+            onclick="
+                showPage('history',this)
+            "
+        >
+
+            <span class="nav-icon">
+                ↻
+            </span>
+
+            <span>Stock History</span>
+
+        </button>
+
+
+
+        <div
+            class="nav-label"
+            data-permission="users"
+        >
+            ADMINISTRATION
+        </div>
+
+
+        <button
+            class="nav-item"
+            data-page="users"
+            data-permission="users"
+            onclick="
+                showPage('users',this)
+            "
+        >
+
+            <span class="nav-icon">
+                👥
+            </span>
+
+            <span>User Management</span>
+
+        </button>
+
+
+
+        <!-- LOGGED IN USER -->
+
+        <div class="sidebar-user">
+
+            <div class="sidebar-user-info">
+
+                <div
+                    id="sidebarAvatar"
+                    class="user-avatar"
+                >
+                    A
+                </div>
+
+
+                <div class="user-info-text">
+
+                    <strong id="sidebarName">
+                        Administrator
+                    </strong>
+
+                    <span id="sidebarRole">
+                        ADMIN
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                ↩ Sign Out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <strong>
+                    BookStock
+                </strong>
+
+                <span>
+                    Inventory Management System
+                </span>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <span
+                    id="roleBadge"
+                    class="role-badge"
+                >
+                    ADMIN
+                </span>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- CONTENT -->
+
+        <div class="content">
+
+
+            <!-- ==========================================
+                 DASHBOARD
+            =========================================== -->
+
+            <section
+                id="dashboard"
+                class="page active"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h1>
+                            Dashboard
+                        </h1>
+
+                        <p>
+                            Here's what is happening
+                            with your inventory.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="btn"
+                        data-permission="manageBooks"
+                        onclick="openBookModal()"
+                    >
+                        + Add Book
+                    </button>
+
+                </div>
+
+
+
+                <div class="stats-grid">
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div
+                                class="
+                                    stat-icon
+                                    stat-purple
+                                "
+                            >
+                                📚
+                            </div>
+
+                        </div>
+
+                        <p>
+                            TOTAL BOOK TITLES
+                        </p>
+
+                        <h2 id="totalTitles">
+                            0
+                        </h2>
+
+                    </div>
+
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div
+                                class="
+                                    stat-icon
+                                    stat-green
+                                "
+                            >
+                                📦
+                            </div>
+
+                        </div>
+
+                        <p>
+                            TOTAL STOCK UNITS
+                        </p>
+
+                        <h2 id="totalUnits">
+                            0
+                        </h2>
+
+                    </div>
+
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div
+                                class="
+                                    stat-icon
+                                    stat-orange
+                                "
+                            >
+                                ⚠️
+                            </div>
+
+                        </div>
+
+                        <p>
+                            LOW STOCK
+                        </p>
+
+                        <h2 id="lowStock">
+                            0
+                        </h2>
+
+                    </div>
+
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-top">
+
+                            <div
+                                class="
+                                    stat-icon
+                                    stat-red
+                                "
+                            >
+                                ⨯
+                            </div>
+
+                        </div>
+
+                        <p>
+                            OUT OF STOCK
+                        </p>
+
+                        <h2 id="outStock">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <strong>
+                                Inventory Overview
+                            </strong>
+
+                            <span>
+                                Recently monitored books
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="btn btn-secondary"
+                            onclick="
+                                openPageByName('books')
+                            "
+                        >
+                            View All
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="dashboardTable"
+                        class="table-responsive"
+                    >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 BOOKS
+            =========================================== -->
+
+            <section
+                id="books"
+                class="page"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h1>
+                            Book Inventory
+                        </h1>
+
+                        <p>
+                            Search, monitor and manage
+                            your book stock.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="btn"
+                        data-permission="manageBooks"
+                        onclick="openBookModal()"
+                    >
+                        + Add New Book
+                    </button>
+
+                </div>
+
+
+
+                <div class="panel">
+
+
+                    <div class="toolbar">
+
+                        <div class="search-box">
+
+                            <span>⌕</span>
+
+                            <input
+                                id="bookSearch"
+                                type="text"
+                                placeholder="
+                                    Search title,
+                                    ISBN or category...
+                                "
+                                oninput="
+                                    renderBooks()
+                                "
+                            >
+
+                        </div>
+
+
+                        <select
+                            id="statusFilter"
+                            class="filter-select"
+                            onchange="
+                                renderBooks()
+                            "
+                        >
+
+                            <option value="">
+                                All Stock Status
+                            </option>
+
+                            <option value="in">
+                                In Stock
+                            </option>
+
+                            <option value="low">
+                                Low Stock
+                            </option>
+
+                            <option value="out">
+                                Out of Stock
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div
+                        id="booksTable"
+                        class="table-responsive"
+                    >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 HISTORY
+            =========================================== -->
+
+            <section
+                id="history"
+                class="page"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h1>
+                            Stock History
+                        </h1>
+
+                        <p>
+                            Review every stock movement
+                            recorded by your team.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <strong>
+                                Transaction History
+                            </strong>
+
+                            <span>
+                                Stock IN and OUT records
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="historyTable"
+                        class="table-responsive"
+                    >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ==========================================
+                 USERS
+            =========================================== -->
+
+            <section
+                id="users"
+                class="page"
+            >
+
+                <div class="page-header">
+
+                    <div>
+
+                        <h1>
+                            User Management
+                        </h1>
+
+                        <p>
+                            Create accounts and manage
+                            system access.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="btn"
+                        onclick="
+                            openUserModal()
+                        "
+                    >
+                        + Create User
+                    </button>
+
+                </div>
+
+
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <strong>
+                                System Users
+                            </strong>
+
+                            <span id="userCountText">
+                                0 registered users
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="usersTable"
+                        class="table-responsive"
+                    >
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+</div>
+<!-- ======================================================
+     PART 2 — MODALS
+====================================================== -->
+
+
+<!-- ======================================================
+     ADD / EDIT BOOK MODAL
+====================================================== -->
+
+<div id="bookModal" class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-title">
+
+            <div>
+
+                <h2 id="bookModalTitle">
+                    📚 Add New Book
+                </h2>
+
+                <p id="bookModalSubtitle">
+                    Add a new title to your inventory.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="closeModal('bookModal')"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <!--
+            Hidden field.
+            Empty = adding new book.
+            Has ID = editing existing book.
+        -->
+
+        <input
+            type="hidden"
+            id="editBookId"
+        >
+
+
+        <div class="form-grid">
+
+
+            <!-- BOOK TITLE -->
+
+            <div class="field full-field">
+
+                <label>
+                    BOOK TITLE *
+                </label>
+
+                <input
+                    id="bookTitle"
+                    type="text"
+                    placeholder="Example: Atomic Habits"
+                >
+
+            </div>
+
+
+
+            <!-- ISBN -->
+
+            <div class="field">
+
+                <label>
+                    ISBN / BOOK CODE
+                </label>
+
+                <input
+                    id="bookISBN"
+                    type="text"
+                    placeholder="9780735211292"
+                >
+
+            </div>
+
+
+
+            <!-- CATEGORY -->
+
+            <div class="field">
+
+                <label>
+                    CATEGORY
+                </label>
+
+                <select id="bookCategory">
+
+                    <option value="Fiction">
+                        Fiction
+                    </option>
+
+                    <option value="Non-Fiction">
+                        Non-Fiction
+                    </option>
+
+                    <option value="Academic">
+                        Academic
+                    </option>
+
+                    <option value="Business">
+                        Business
+                    </option>
+
+                    <option value="Finance">
+                        Finance
+                    </option>
+
+                    <option value="Technology">
+                        Technology
+                    </option>
+
+                    <option value="Self Development">
+                        Self Development
+                    </option>
+
+                    <option value="Children">
+                        Children
+                    </option>
+
+                    <option value="Reference">
+                        Reference
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- LOCATION -->
+
+            <div class="field">
+
+                <label>
+                    SHELF / LOCATION
+                </label>
+
+                <input
+                    id="bookLocation"
+                    type="text"
+                    placeholder="Example: Shelf A1"
+                >
+
+            </div>
+
+
+
+            <!-- MINIMUM STOCK -->
+
+            <div class="field">
+
+                <label>
+                    LOW STOCK ALERT AT
+                </label>
+
+                <input
+                    id="bookMinimum"
+                    type="number"
+                    min="0"
+                    value="5"
+                >
+
+            </div>
+
+
+
+            <!-- OPENING STOCK -->
+
+            <div
+                id="openingStockField"
+                class="field full-field"
+            >
+
+                <label>
+                    OPENING STOCK
+                </label>
+
+                <input
+                    id="bookStock"
+                    type="number"
+                    min="0"
+                    value="0"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeModal('bookModal')"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="saveBookButton"
+                class="btn"
+                onclick="saveBook()"
+            >
+                Add Book
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ======================================================
+     STOCK IN / STOCK OUT MODAL
+====================================================== -->
+
+<div id="stockModal" class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-title">
+
+            <div>
+
+                <h2 id="stockModalTitle">
+                    📦 Stock Movement
+                </h2>
+
+                <p id="stockModalSubtitle">
+                    Record a stock movement.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="closeModal('stockModal')"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+
+        <!-- Hidden book ID -->
+
+        <input
+            type="hidden"
+            id="stockBookId"
+        >
+
+
+        <!-- Hidden IN / OUT -->
+
+        <input
+            type="hidden"
+            id="stockType"
+        >
+
+
+
+        <!-- CURRENT STOCK INFORMATION -->
+
+        <div
+            style="
+                background:#f8f8fc;
+                border:1px solid var(--border);
+                border-radius:12px;
+                padding:15px;
+                margin-bottom:20px;
+            "
+        >
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:15px;
+                "
+            >
+
+                <div>
+
+                    <div
+                        style="
+                            color:var(--muted);
+                            font-size:9px;
+                            font-weight:800;
+                            letter-spacing:.5px;
+                            margin-bottom:5px;
+                        "
+                    >
+                        SELECTED BOOK
+                    </div>
+
+                    <strong
+                        id="stockBookName"
+                        style="
+                            font-size:13px;
+                        "
+                    >
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div
+                    style="
+                        text-align:right;
+                    "
+                >
+
+                    <div
+                        style="
+                            color:var(--muted);
+                            font-size:9px;
+                            font-weight:800;
+                            letter-spacing:.5px;
+                            margin-bottom:5px;
+                        "
+                    >
+                        CURRENT STOCK
+                    </div>
+
+                    <strong
+                        id="currentStockDisplay"
+                        style="
+                            font-size:21px;
+                            color:var(--primary);
+                        "
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="form-grid">
+
+
+            <!-- QUANTITY -->
+
+            <div class="field">
+
+                <label>
+                    QUANTITY *
+                </label>
+
+                <input
+                    id="stockQuantity"
+                    type="number"
+                    min="1"
+                    value="1"
+                >
+
+            </div>
+
+
+
+            <!-- MOVEMENT -->
+
+            <div class="field">
+
+                <label>
+                    MOVEMENT TYPE
+                </label>
+
+                <input
+                    id="stockTypeDisplay"
+                    type="text"
+                    value="Stock IN"
+                    disabled
+                >
+
+            </div>
+
+
+
+            <!-- REASON -->
+
+            <div class="field full-field">
+
+                <label>
+                    REASON / NOTES
+                </label>
+
+                <input
+                    id="stockReason"
+                    type="text"
+                    placeholder="Example: New supplier delivery"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- INFO MESSAGE -->
+
+        <div
+            id="stockInfoMessage"
+            style="
+                padding:11px 13px;
+                border-radius:9px;
+                background:var(--info-soft);
+                color:#3971d3;
+                font-size:10px;
+                line-height:1.6;
+            "
+        >
+            Stock changes will automatically be recorded
+            in Transaction History.
+        </div>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeModal('stockModal')"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="confirmStockButton"
+                class="btn"
+                onclick="saveStockTransaction()"
+            >
+                Confirm Movement
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ======================================================
+     CREATE / EDIT USER MODAL
+====================================================== -->
+
+<div id="userModal" class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-title">
+
+            <div>
+
+                <h2 id="userModalTitle">
+                    👤 Create User
+                </h2>
+
+                <p id="userModalSubtitle">
+                    Create login credentials for a new user.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="closeModal('userModal')"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+
+        <!--
+            Empty = create account.
+            Has ID = edit account.
+        -->
+
+        <input
+            type="hidden"
+            id="editUserId"
+        >
+
+
+
+        <div class="form-grid">
+
+
+            <!-- FULL NAME -->
+
+            <div class="field full-field">
+
+                <label>
+                    FULL NAME *
+                </label>
+
+                <input
+                    id="userFullName"
+                    type="text"
+                    placeholder="Example: Nur Aina"
+                >
+
+            </div>
+
+
+
+            <!-- USERNAME -->
+
+            <div class="field">
+
+                <label>
+                    USERNAME *
+                </label>
+
+                <input
+                    id="newUsername"
+                    type="text"
+                    placeholder="Example: aina"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+
+            <!-- ROLE -->
+
+            <div class="field">
+
+                <label>
+                    USER ROLE *
+                </label>
+
+                <select id="newUserRole">
+
+                    <option value="staff">
+                        Staff
+                    </option>
+
+                    <option value="admin">
+                        Admin
+                    </option>
+
+                    <option value="viewer">
+                        Viewer
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- PASSWORD -->
+
+            <div class="field full-field">
+
+                <label id="userPasswordLabel">
+                    PASSWORD *
+                </label>
+
+                <div class="input-wrap">
+
+                    <span class="input-icon">
+                        🔒
+                    </span>
+
+                    <input
+                        id="newUserPassword"
+                        type="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        onclick="
+                            toggleNewUserPassword()
+                        "
+                    >
+                        👁
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ACCOUNT STATUS -->
+
+            <div
+                id="accountStatusField"
+                class="field full-field"
+                style="display:none;"
+            >
+
+                <label>
+                    ACCOUNT STATUS
+                </label>
+
+                <select id="userStatus">
+
+                    <option value="active">
+                        Active
+                    </option>
+
+                    <option value="inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ROLE INFORMATION -->
+
+        <div
+            id="roleDescription"
+            style="
+                padding:13px 14px;
+                margin-top:3px;
+                border-radius:10px;
+                background:var(--primary-soft);
+                color:#5550b9;
+                font-size:10px;
+                line-height:1.6;
+            "
+        >
+
+            <strong>Staff Access</strong>
+            <br>
+
+            Staff can view the dashboard, manage books,
+            perform Stock IN/OUT and view transaction history.
+            Staff cannot manage users or delete books.
+
+        </div>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeModal('userModal')"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="saveUserButton"
+                class="btn"
+                onclick="saveUser()"
+            >
+                Create User
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ======================================================
+     PUBLIC SIGN UP MODAL
+====================================================== -->
+
+<div id="signupModal" class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-title">
+            <div>
+                <h2>✨ Create Account</h2>
+                <p>Create your BookStock account.</p>
+            </div>
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="closeModal('signupModal')"
+            >
+                ✕
+            </button>
+        </div>
+
+        <div class="form-grid">
+
+            <div class="field full-field">
+                <label>FULL NAME *</label>
+                <input
+                    id="signupFullName"
+                    type="text"
+                    placeholder="Example: Batrisyia Irdina"
+                    autocomplete="name"
+                >
+            </div>
+
+            <div class="field full-field">
+                <label>USERNAME *</label>
+                <input
+                    id="signupUsername"
+                    type="text"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="field">
+                <label>PASSWORD *</label>
+                <input
+                    id="signupPassword"
+                    type="password"
+                    placeholder="Minimum 6 characters"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <div class="field">
+                <label>CONFIRM PASSWORD *</label>
+                <input
+                    id="signupConfirmPassword"
+                    type="password"
+                    placeholder="Repeat password"
+                    autocomplete="new-password"
+                    onkeydown="if(event.key === 'Enter'){ signupUser(); }"
+                >
+            </div>
+
+        </div>
+
+        <div style="
+            padding:12px 14px;
+            margin-top:3px;
+            border-radius:10px;
+            background:var(--info-soft);
+            color:#3971d3;
+            font-size:10px;
+            line-height:1.6;
+        ">
+            New public accounts are created as <strong>Viewer</strong>.
+            An administrator can change the account role later if required.
+        </div>
+
+        <div class="modal-actions">
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeModal('signupModal')"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn"
+                onclick="signupUser()"
+            >
+                Create Account
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     USER DETAILS / SECURITY MODAL
+====================================================== -->
+
+<div id="userDetailsModal" class="modal-bg">
+
+    <div class="modal">
+
+        <div class="modal-title">
+
+            <div>
+
+                <h2>
+                    👤 User Details
+                </h2>
+
+                <p>
+                    Account information and access status.
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-modal"
+                onclick="
+                    closeModal('userDetailsModal')
+                "
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+
+        <div
+            id="userDetailsContent"
+        >
+        </div>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="
+                    closeModal('userDetailsModal')
+                "
+            >
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ======================================================
+     DELETE CONFIRMATION MODAL
+====================================================== -->
+
+<div id="confirmModal" class="modal-bg">
+
+    <div
+        class="modal"
+        style="max-width:420px;"
+    >
+
+        <div
+            style="
+                width:48px;
+                height:48px;
+                display:grid;
+                place-items:center;
+                border-radius:13px;
+                background:var(--danger-soft);
+                font-size:21px;
+                margin-bottom:17px;
+            "
+        >
+            🗑️
+        </div>
+
+
+        <h2
+            id="confirmTitle"
+            style="
+                font-size:19px;
+                margin-bottom:8px;
+            "
+        >
+            Delete Item?
+        </h2>
+
+
+        <p
+            id="confirmMessage"
+            style="
+                color:var(--muted);
+                font-size:11px;
+                line-height:1.7;
+            "
+        >
+            This action cannot be undone.
+        </p>
+
+
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="
+                    closeModal('confirmModal')
+                "
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                id="confirmDeleteButton"
+                class="btn btn-danger"
+            >
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   BOOKSTOCK V2
+   PART 3 — JAVASCRIPT
+========================================================= */
+
+
+/* =========================================================
+   DATABASE / LOCAL STORAGE
+========================================================= */
+
+const STORAGE_KEYS = {
+    books: "bookstock_books_v2",
+    users: "bookstock_users_v2",
+    transactions: "bookstock_transactions_v2"
+};
+
+
+/*
+    Default books only appear when the system
+    is opened for the first time.
+*/
+
+const defaultBooks = [
+
+    {
+        id: 1,
+        title: "Atomic Habits",
+        isbn: "9780735211292",
+        category: "Self Development",
+        location: "Shelf A1",
+        stock: 18,
+        minimum: 5
+    },
+
+    {
+        id: 2,
+        title: "The Psychology of Money",
+        isbn: "9780857197689",
+        category: "Finance",
+        location: "Shelf A2",
+        stock: 4,
+        minimum: 5
+    },
+
+    {
+        id: 3,
+        title: "Introduction to Algorithms",
+        isbn: "9780262046305",
+        category: "Technology",
+        location: "Shelf B1",
+        stock: 0,
+        minimum: 3
+    },
+
+    {
+        id: 4,
+        title: "Clean Code",
+        isbn: "9780132350884",
+        category: "Technology",
+        location: "Shelf B2",
+        stock: 12,
+        minimum: 4
+    }
+
+];
+
+
+/*
+    Default administrator account.
+
+    IMPORTANT:
+    This is okay for our current prototype.
+
+    Later, when we connect Firebase/Supabase,
+    passwords should NOT be stored like this.
+*/
+
+const defaultUsers = [
+
+    {
+        id: 1,
+        fullName: "System Administrator",
+        username: "admin",
+        password: "admin123",
+        role: "admin",
+        status: "active",
+        createdAt: new Date().toISOString(),
+        lastLogin: null
+    }
+
+];
+
+
+let books =
+    JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.books)
+    ) || defaultBooks;
+
+
+let users =
+    JSON.parse(
+        localStorage.getItem(STORAGE_KEYS.users)
+    ) || defaultUsers;
+
+
+let transactions =
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_KEYS.transactions
+        )
+    ) || [];
+
+
+/* Upgrade previously registered Viewer accounts to Staff.
+   Guest Viewer is not stored in users[], so it remains read-only. */
+users = users.map(user => {
+    if (user.role === "viewer") {
+        return { ...user, role: "staff" };
+    }
+    return user;
+});
+
+localStorage.setItem(
+    STORAGE_KEYS.users,
+    JSON.stringify(users)
+);
+
+
+let currentUser = null;
+
+
+/*
+    Used by confirmation modal.
+*/
+
+let pendingDeleteAction = null;
+
+
+/* =========================================================
+   SAVE DATABASE
+========================================================= */
+
+function saveDatabase() {
+
+    localStorage.setItem(
+        STORAGE_KEYS.books,
+        JSON.stringify(books)
+    );
+
+    localStorage.setItem(
+        STORAGE_KEYS.users,
+        JSON.stringify(users)
+    );
+
+    localStorage.setItem(
+        STORAGE_KEYS.transactions,
+        JSON.stringify(transactions)
+    );
+
+}
+
+
+/* =========================================================
+   SECURITY / TEXT HELPERS
+========================================================= */
+
+/*
+    Since values such as book title and username are
+    inserted into HTML tables, escape them first.
+
+    This prevents entered HTML from being rendered.
+*/
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   DATE FORMAT
+========================================================= */
+
+function formatDate(dateValue) {
+
+    if (!dateValue) {
+        return "Never";
+    }
+
+    const date =
+        new Date(dateValue);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "-";
+    }
+
+    return date.toLocaleString(
+        "en-MY",
+        {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TOAST NOTIFICATION
+========================================================= */
+
+function showToast(message) {
+
+    const existing =
+        document.querySelector(".toast");
+
+    if (existing) {
+        existing.remove();
+    }
+
+
+    const toast =
+        document.createElement("div");
+
+    toast.className =
+        "toast";
+
+    toast.textContent =
+        message;
+
+
+    document.body.appendChild(
+        toast
+    );
+
+
+    setTimeout(() => {
+
+        toast.style.opacity =
+            "0";
+
+        toast.style.transform =
+            "translateY(10px)";
+
+
+        setTimeout(() => {
+
+            toast.remove();
+
+        }, 250);
+
+    }, 2600);
+
+}
+
+
+/* =========================================================
+   LOGIN PASSWORD VISIBILITY
+========================================================= */
+
+function togglePassword() {
+
+    const input =
+        document.getElementById(
+            "loginPassword"
+        );
+
+    input.type =
+        input.type === "password"
+            ? "text"
+            : "password";
+
+}
+
+
+function toggleNewUserPassword() {
+
+    const input =
+        document.getElementById(
+            "newUserPassword"
+        );
+
+    input.type =
+        input.type === "password"
+            ? "text"
+            : "password";
+
+}
+
+/* =========================================================
+   PUBLIC SIGN UP
+========================================================= */
+
+function openSignupModal() {
+
+    // Clear old input
+    document.getElementById("signupFullName").value = "";
+    document.getElementById("signupUsername").value = "";
+    document.getElementById("signupPassword").value = "";
+    document.getElementById("signupConfirmPassword").value = "";
+
+    // Open signup modal
+    document.getElementById("signupModal").style.display = "flex";
+
+    // Automatically focus Full Name
+    setTimeout(() => {
+        document.getElementById("signupFullName").focus();
+    }, 100);
+}
+
+
+function signupUser() {
+
+    // Get values from signup form
+    const fullName =
+        document
+            .getElementById("signupFullName")
+            .value
+            .trim();
+
+    const username =
+        document
+            .getElementById("signupUsername")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const password =
+        document
+            .getElementById("signupPassword")
+            .value;
+
+    const confirmPassword =
+        document
+            .getElementById("signupConfirmPassword")
+            .value;
+
+
+    /* =====================================
+       CHECK EMPTY FIELDS
+    ===================================== */
+
+    if (
+        !fullName ||
+        !username ||
+        !password ||
+        !confirmPassword
+    ) {
+
+        alert("Please fill in all fields.");
+
+        return;
+    }
+
+
+    /* =====================================
+       CHECK USERNAME
+    ===================================== */
+
+    if (username.length < 3) {
+
+        alert(
+            "Username must contain at least 3 characters."
+        );
+
+        return;
+    }
+
+
+    if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+
+        alert(
+            "Username can only contain letters, numbers, dots, underscores and hyphens."
+        );
+
+        return;
+    }
+
+
+    /* =====================================
+       CHECK DUPLICATE USERNAME
+    ===================================== */
+
+    const usernameExists =
+        users.some(user =>
+            user.username.toLowerCase() === username
+        );
+
+
+    if (usernameExists) {
+
+        alert(
+            "This username already exists. Please choose another username."
+        );
+
+        return;
+    }
+
+
+    /* =====================================
+       CHECK PASSWORD
+    ===================================== */
+
+    if (password.length < 6) {
+
+        alert(
+            "Password must contain at least 6 characters."
+        );
+
+        return;
+    }
+
+
+    if (password !== confirmPassword) {
+
+        alert(
+            "Password and Confirm Password do not match."
+        );
+
+        return;
+    }
+
+
+    /* =====================================
+       CREATE NEW USER
+    ===================================== */
+
+    const newUser = {
+
+        id: Date.now(),
+
+        fullName: fullName,
+
+        username: username,
+
+        password: password,
+
+        // Prototype: users who sign up receive Staff access
+        // so they can add/edit books and perform Stock IN/OUT.
+        role: "staff",
+
+        status: "active",
+
+        createdAt: new Date().toISOString(),
+
+        lastLogin: null
+    };
+
+
+    /* =====================================
+       ADD USER INTO DATABASE
+    ===================================== */
+
+    users.push(newUser);
+
+    saveDatabase();
+
+
+    /* =====================================
+       CLOSE SIGNUP MODAL
+    ===================================== */
+
+    document
+        .getElementById("signupModal")
+        .style.display = "none";
+
+
+    /* =====================================
+       AUTO-FILL LOGIN USERNAME
+    ===================================== */
+
+    document
+        .getElementById("loginUsername")
+        .value = username;
+
+    document
+        .getElementById("loginPassword")
+        .value = "";
+
+
+    /* =====================================
+       SUCCESS MESSAGE
+    ===================================== */
+
+    showToast(
+        "Account created successfully! You can now sign in."
+    );
+
+
+    // Focus password so user can immediately login
+    setTimeout(() => {
+
+        document
+            .getElementById("loginPassword")
+            .focus();
+
+    }, 200);
+}
+
+
+/* =========================================================
+   USER LOGIN
+========================================================= */
+
+function userLogin() {
+
+    const username =
+        document
+            .getElementById(
+                "loginUsername"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const password =
+        document
+            .getElementById(
+                "loginPassword"
+            )
+            .value;
+
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+
+    error.style.display =
+        "none";
+
+
+    if (!username || !password) {
+
+        error.textContent =
+            "Please enter your username and password.";
+
+        error.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    const user =
+        users.find(user =>
+
+            user.username
+                .toLowerCase()
+                === username
+
+            &&
+
+            user.password
+                === password
+
+        );
+
+
+    if (!user) {
+
+        error.textContent =
+            "Incorrect username or password.";
+
+        error.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    if (user.status !== "active") {
+
+        error.textContent =
+            "This account has been deactivated. Please contact an administrator.";
+
+        error.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    user.lastLogin =
+        new Date().toISOString();
+
+
+    saveDatabase();
+
+
+    currentUser =
+        user;
+
+
+    enterApplication();
+
+
+    showToast(
+        `Welcome back, ${user.fullName}!`
+    );
+
+}
+
+
+/* =========================================================
+   VIEWER LOGIN
+========================================================= */
+
+function viewerLogin() {
+
+    currentUser = {
+
+        id: "viewer",
+
+        fullName:
+            "Guest Viewer",
+
+        username:
+            "viewer",
+
+        role:
+            "viewer",
+
+        status:
+            "active"
+
+    };
+
+
+    enterApplication();
+
+
+    showToast(
+        "You are browsing as Viewer."
+    );
+
+}
+
+
+/* =========================================================
+   ENTER APPLICATION
+========================================================= */
+
+function enterApplication() {
+
+    document
+        .getElementById(
+            "loginScreen"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "app"
+        )
+        .style.display =
+        "block";
+
+
+    updateCurrentUserUI();
+
+    applyPermissions();
+
+    renderAll();
+
+
+    /*
+        Viewer opens Books immediately.
+
+        Admin/Staff opens Dashboard.
+    */
+
+    if (
+        currentUser.role
+        === "viewer"
+    ) {
+
+        openPageByName(
+            "books"
+        );
+
+    }
+
+    else {
+
+        openPageByName(
+            "dashboard"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CURRENT USER UI
+========================================================= */
+
+function updateCurrentUserUI() {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    const initial =
+        currentUser.fullName
+            .trim()
+            .charAt(0)
+            .toUpperCase()
+        || "U";
+
+
+    document
+        .getElementById(
+            "sidebarAvatar"
+        )
+        .textContent =
+        initial;
+
+
+    document
+        .getElementById(
+            "sidebarName"
+        )
+        .textContent =
+        currentUser.fullName;
+
+
+    document
+        .getElementById(
+            "sidebarRole"
+        )
+        .textContent =
+        currentUser.role;
+
+
+    document
+        .getElementById(
+            "roleBadge"
+        )
+        .textContent =
+        currentUser.role
+            .toUpperCase();
+
+}
+
+
+/* =========================================================
+   PERMISSIONS
+========================================================= */
+
+function hasPermission(permission) {
+
+    if (!currentUser) {
+        return false;
+    }
+
+
+    const role =
+        currentUser.role;
+
+
+    const permissions = {
+
+        admin: {
+
+            dashboard: true,
+            history: true,
+            users: true,
+
+            manageBooks: true,
+            deleteBooks: true,
+
+            stock: true
+
+        },
+
+
+        staff: {
+
+            dashboard: true,
+            history: true,
+            users: false,
+
+            manageBooks: true,
+            deleteBooks: false,
+
+            stock: true
+
+        },
+
+
+        viewer: {
+
+            dashboard: false,
+            history: false,
+            users: false,
+
+            manageBooks: false,
+            deleteBooks: false,
+
+            stock: false
+
+        }
+
+    };
+
+
+    return Boolean(
+        permissions[role]?.[
+            permission
+        ]
+    );
+
+}
+
+
+/* =========================================================
+   APPLY PERMISSIONS
+========================================================= */
+
+function applyPermissions() {
+
+    document
+        .querySelectorAll(
+            "[data-permission]"
+        )
+        .forEach(element => {
+
+            const permission =
+                element.dataset.permission;
+
+
+            element.style.display =
+                hasPermission(
+                    permission
+                )
+                ? ""
+                : "none";
+
+        });
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+function logout() {
+
+    currentUser =
+        null;
+
+
+    document
+        .getElementById(
+            "app"
+        )
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById(
+            "loginScreen"
+        )
+        .style.display =
+        "grid";
+
+
+    document
+        .getElementById(
+            "loginPassword"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "loginError"
+        )
+        .style.display =
+        "none";
+
+
+    showToast(
+        "You have signed out."
+    );
+
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+function showPage(
+    pageName,
+    button
+) {
+
+    /*
+        Prevent users from manually accessing
+        restricted pages through JS.
+    */
+
+    if (
+        pageName === "dashboard"
+        &&
+        !hasPermission(
+            "dashboard"
+        )
+    ) {
+        return;
+    }
+
+
+    if (
+        pageName === "history"
+        &&
+        !hasPermission(
+            "history"
+        )
+    ) {
+        return;
+    }
+
+
+    if (
+        pageName === "users"
+        &&
+        !hasPermission(
+            "users"
+        )
+    ) {
+        return;
+    }
+
+
+    document
+        .querySelectorAll(
+            ".page"
+        )
+        .forEach(page => {
+
+            page.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    const target =
+        document.getElementById(
+            pageName
+        );
+
+
+    if (!target) {
+        return;
+    }
+
+
+    target.classList.add(
+        "active"
+    );
+
+
+    document
+        .querySelectorAll(
+            ".nav-item"
+        )
+        .forEach(item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    if (button) {
+
+        button.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   OPEN PAGE BY NAME
+========================================================= */
+
+function openPageByName(
+    pageName
+) {
+
+    const button =
+        document.querySelector(
+            `.nav-item[data-page="${pageName}"]`
+        );
+
+
+    showPage(
+        pageName,
+        button
+    );
+
+}
+
+
+/* =========================================================
+   BOOK STATUS
+========================================================= */
+
+function getBookStatus(book) {
+
+    if (
+        Number(book.stock)
+        === 0
+    ) {
+
+        return {
+
+            key: "out",
+
+            text:
+                "Out of Stock",
+
+            class:
+                "badge-danger"
+
+        };
+
+    }
+
+
+    if (
+        Number(book.stock)
+        <=
+        Number(book.minimum)
+    ) {
+
+        return {
+
+            key: "low",
+
+            text:
+                "Low Stock",
+
+            class:
+                "badge-warning"
+
+        };
+
+    }
+
+
+    return {
+
+        key: "in",
+
+        text:
+            "In Stock",
+
+        class:
+            "badge-success"
+
+    };
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function renderDashboard() {
+
+    document
+        .getElementById(
+            "totalTitles"
+        )
+        .textContent =
+        books.length;
+
+
+    const totalUnits =
+        books.reduce(
+
+            (total, book) =>
+                total
+                +
+                Number(
+                    book.stock
+                ),
+
+            0
+
+        );
+
+
+    document
+        .getElementById(
+            "totalUnits"
+        )
+        .textContent =
+        totalUnits;
+
+
+    const lowStock =
+        books.filter(book =>
+
+            Number(book.stock) > 0
+
+            &&
+
+            Number(book.stock)
+                <=
+                Number(book.minimum)
+
+        ).length;
+
+
+    document
+        .getElementById(
+            "lowStock"
+        )
+        .textContent =
+        lowStock;
+
+
+    const outStock =
+        books.filter(book =>
+
+            Number(book.stock)
+            === 0
+
+        ).length;
+
+
+    document
+        .getElementById(
+            "outStock"
+        )
+        .textContent =
+        outStock;
+
+
+    document
+        .getElementById(
+            "dashboardTable"
+        )
+        .innerHTML =
+        createBookTable(
+            books.slice(
+                0,
+                6
+            ),
+            true
+        );
+
+}
+
+
+/* =========================================================
+   CREATE BOOK TABLE
+========================================================= */
+
+function createBookTable(
+    list,
+    dashboardMode = false
+) {
+
+    if (!list.length) {
+
+        return `
+            <div class="empty-state">
+
+                <div>📚</div>
+
+                No books found.
+
+            </div>
+        `;
+
+    }
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>BOOK</th>
+
+                    <th>CATEGORY</th>
+
+                    <th>LOCATION</th>
+
+                    <th>STOCK</th>
+
+                    <th>STATUS</th>
+
+                    ${
+                        !dashboardMode
+                        &&
+                        (
+                            hasPermission(
+                                "manageBooks"
+                            )
+                            ||
+                            hasPermission(
+                                "stock"
+                            )
+                        )
+
+                        ?
+
+                        `<th>ACTION</th>`
+
+                        :
+
+                        ""
+                    }
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+    `;
+
+
+    list.forEach(book => {
+
+        const status =
+            getBookStatus(book);
+
+
+        let actions =
+            "";
+
+
+        if (!dashboardMode) {
+
+            if (
+                hasPermission(
+                    "stock"
+                )
+            ) {
+
+                actions += `
+
+                    <button
+                        class="
+                            action-btn
+                            action-in
+                        "
+                        onclick="
+                            openStock(
+                                ${book.id},
+                                'IN'
+                            )
+                        "
+                    >
+                        + IN
+                    </button>
+
+
+                    <button
+                        class="
+                            action-btn
+                            action-out
+                        "
+                        onclick="
+                            openStock(
+                                ${book.id},
+                                'OUT'
+                            )
+                        "
+                    >
+                        − OUT
+                    </button>
+
+                `;
+
+            }
+
+
+            if (
+                hasPermission(
+                    "manageBooks"
+                )
+            ) {
+
+                actions += `
+
+                    <button
+                        class="
+                            action-btn
+                            action-edit
+                        "
+                        onclick="
+                            editBook(
+                                ${book.id}
+                            )
+                        "
+                    >
+                        Edit
+                    </button>
+
+                `;
+
+            }
+
+
+            if (
+                hasPermission(
+                    "deleteBooks"
+                )
+            ) {
+
+                actions += `
+
+                    <button
+                        class="
+                            action-btn
+                            action-delete
+                        "
+                        onclick="
+                            requestDeleteBook(
+                                ${book.id}
+                            )
+                        "
+                    >
+                        Delete
+                    </button>
+
+                `;
+
+            }
+
+        }
+
+
+        html += `
+
+            <tr>
+
+                <td>
+
+                    <div class="book-name">
+
+                        ${
+                            escapeHTML(
+                                book.title
+                            )
+                        }
+
+                    </div>
+
+
+                    <div class="book-code">
+
+                        ${
+                            escapeHTML(
+                                book.isbn
+                            )
+                        }
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        escapeHTML(
+                            book.category
+                        )
+                    }
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        escapeHTML(
+                            book.location
+                        )
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <strong>
+
+                        ${
+                            Number(
+                                book.stock
+                            )
+                        }
+
+                    </strong>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="
+                            badge
+                            ${status.class}
+                        "
+                    >
+
+                        ${status.text}
+
+                    </span>
+
+                </td>
+
+
+                ${
+                    !dashboardMode
+                    &&
+                    (
+                        hasPermission(
+                            "manageBooks"
+                        )
+                        ||
+                        hasPermission(
+                            "stock"
+                        )
+                    )
+
+                    ?
+
+                    `
+
+                    <td>
+
+                        <div class="action-group">
+
+                            ${actions}
+
+                        </div>
+
+                    </td>
+
+                    `
+
+                    :
+
+                    ""
+                }
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   RENDER BOOKS
+========================================================= */
+
+function renderBooks() {
+
+    const searchInput =
+        document.getElementById(
+            "bookSearch"
+        );
+
+
+    const filterInput =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput
+                .value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const filter =
+        filterInput
+            ? filterInput.value
+            : "";
+
+
+    const filtered =
+        books.filter(book => {
+
+            const matchesSearch =
+
+                book.title
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(book.isbn)
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                book.category
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(book.location)
+                    .toLowerCase()
+                    .includes(search);
+
+
+            const status =
+                getBookStatus(book);
+
+
+            const matchesStatus =
+
+                !filter
+
+                ||
+
+                status.key
+                === filter;
+
+
+            return (
+                matchesSearch
+                &&
+                matchesStatus
+            );
+
+        });
+
+
+    document
+        .getElementById(
+            "booksTable"
+        )
+        .innerHTML =
+        createBookTable(
+            filtered
+        );
+
+}
+
+
+/* =========================================================
+   OPEN ADD BOOK MODAL
+========================================================= */
+
+function openBookModal() {
+
+    if (
+        !hasPermission(
+            "manageBooks"
+        )
+    ) {
+
+        showToast(
+            "You do not have permission to add books."
+        );
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "editBookId"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "bookModalTitle"
+        )
+        .textContent =
+        "📚 Add New Book";
+
+
+    document
+        .getElementById(
+            "bookModalSubtitle"
+        )
+        .textContent =
+        "Add a new title to your inventory.";
+
+
+    document
+        .getElementById(
+            "saveBookButton"
+        )
+        .textContent =
+        "Add Book";
+
+
+    document
+        .getElementById(
+            "bookTitle"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "bookISBN"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "bookCategory"
+        )
+        .value =
+        "Fiction";
+
+
+    document
+        .getElementById(
+            "bookLocation"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "bookMinimum"
+        )
+        .value =
+        5;
+
+
+    document
+        .getElementById(
+            "bookStock"
+        )
+        .value =
+        0;
+
+
+    document
+        .getElementById(
+            "openingStockField"
+        )
+        .style.display =
+        "block";
+
+
+    openModal(
+        "bookModal"
+    );
+
+
+    setTimeout(() => {
+
+        document
+            .getElementById(
+                "bookTitle"
+            )
+            .focus();
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   EDIT BOOK
+========================================================= */
+
+function editBook(id) {
+
+    if (
+        !hasPermission(
+            "manageBooks"
+        )
+    ) {
+        return;
+    }
+
+
+    const book =
+        books.find(
+            book =>
+                book.id === id
+        );
+
+
+    if (!book) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "editBookId"
+        )
+        .value =
+        book.id;
+
+
+    document
+        .getElementById(
+            "bookModalTitle"
+        )
+        .textContent =
+        "✏️ Edit Book";
+
+
+    document
+        .getElementById(
+            "bookModalSubtitle"
+        )
+        .textContent =
+        "Update book information. Stock changes should use Stock IN/OUT.";
+
+
+    document
+        .getElementById(
+            "saveBookButton"
+        )
+        .textContent =
+        "Save Changes";
+
+
+    document
+        .getElementById(
+            "bookTitle"
+        )
+        .value =
+        book.title;
+
+
+    document
+        .getElementById(
+            "bookISBN"
+        )
+        .value =
+        book.isbn;
+
+
+    document
+        .getElementById(
+            "bookCategory"
+        )
+        .value =
+        book.category;
+
+
+    document
+        .getElementById(
+            "bookLocation"
+        )
+        .value =
+        book.location;
+
+
+    document
+        .getElementById(
+            "bookMinimum"
+        )
+        .value =
+        book.minimum;
+
+
+    /*
+        Hide opening stock during editing.
+
+        This ensures all later stock changes
+        go through Stock IN/OUT and History.
+    */
+
+    document
+        .getElementById(
+            "openingStockField"
+        )
+        .style.display =
+        "none";
+
+
+    openModal(
+        "bookModal"
+    );
+
+}
+
+
+/* =========================================================
+   SAVE BOOK
+========================================================= */
+
+function saveBook() {
+
+    if (
+        !hasPermission(
+            "manageBooks"
+        )
+    ) {
+        return;
+    }
+
+
+    const editId =
+        document
+            .getElementById(
+                "editBookId"
+            )
+            .value;
+
+
+    const title =
+        document
+            .getElementById(
+                "bookTitle"
+            )
+            .value
+            .trim();
+
+
+    const isbn =
+        document
+            .getElementById(
+                "bookISBN"
+            )
+            .value
+            .trim();
+
+
+    const category =
+        document
+            .getElementById(
+                "bookCategory"
+            )
+            .value;
+
+
+    const location =
+        document
+            .getElementById(
+                "bookLocation"
+            )
+            .value
+            .trim();
+
+
+    const minimum =
+        Math.max(
+
+            0,
+
+            Number(
+                document
+                    .getElementById(
+                        "bookMinimum"
+                    )
+                    .value
+            ) || 0
+
+        );
+
+
+    if (!title) {
+
+        alert(
+            "Please enter the book title."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        EDIT EXISTING BOOK
+    */
+
+    if (editId) {
+
+        const book =
+            books.find(
+                book =>
+                    book.id
+                    ===
+                    Number(editId)
+            );
+
+
+        if (!book) {
+            return;
+        }
+
+
+        book.title =
+            title;
+
+
+        book.isbn =
+            isbn
+            ||
+            book.isbn;
+
+
+        book.category =
+            category;
+
+
+        book.location =
+            location
+            ||
+            "-";
+
+
+        book.minimum =
+            minimum;
+
+
+        saveDatabase();
+
+        closeModal(
+            "bookModal"
+        );
+
+        renderAll();
+
+
+        showToast(
+            `"${title}" updated successfully.`
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+        ADD NEW BOOK
+    */
+
+    const openingStock =
+        Math.max(
+
+            0,
+
+            Number(
+                document
+                    .getElementById(
+                        "bookStock"
+                    )
+                    .value
+            ) || 0
+
+        );
+
+
+    const newBook = {
+
+        id:
+            Date.now(),
+
+        title:
+            title,
+
+        isbn:
+            isbn
+            ||
+            `BOOK-${Date.now()}`,
+
+        category:
+            category,
+
+        location:
+            location
+            ||
+            "-",
+
+        stock:
+            openingStock,
+
+        minimum:
+            minimum
+
+    };
+
+
+    books.unshift(
+        newBook
+    );
+
+
+    /*
+        Record opening stock as history
+        when stock is more than zero.
+    */
+
+    if (
+        openingStock > 0
+    ) {
+
+        transactions.unshift({
+
+            id:
+                Date.now()
+                +
+                1,
+
+            date:
+                new Date()
+                    .toISOString(),
+
+            bookId:
+                newBook.id,
+
+            title:
+                newBook.title,
+
+            type:
+                "IN",
+
+            quantity:
+                openingStock,
+
+            reason:
+                "Opening stock",
+
+            userId:
+                currentUser.id,
+
+            user:
+                currentUser.fullName
+
+        });
+
+    }
+
+
+    saveDatabase();
+
+
+    closeModal(
+        "bookModal"
+    );
+
+
+    renderAll();
+
+
+    showToast(
+        `"${title}" added successfully.`
+    );
+
+}
+
+
+/* =========================================================
+   DELETE BOOK REQUEST
+========================================================= */
+
+function requestDeleteBook(id) {
+
+    if (
+        !hasPermission(
+            "deleteBooks"
+        )
+    ) {
+
+        showToast(
+            "Only administrators can delete books."
+        );
+
+        return;
+
+    }
+
+
+    const book =
+        books.find(
+            book =>
+                book.id === id
+        );
+
+
+    if (!book) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "confirmTitle"
+        )
+        .textContent =
+        "Delete Book?";
+
+
+    document
+        .getElementById(
+            "confirmMessage"
+        )
+        .textContent =
+        `Are you sure you want to delete "${book.title}" from the inventory? Existing transaction history will remain.`;
+
+
+    pendingDeleteAction =
+        function () {
+
+            deleteBook(
+                id
+            );
+
+        };
+
+
+    openModal(
+        "confirmModal"
+    );
+
+}
+
+
+/* =========================================================
+   DELETE BOOK
+========================================================= */
+
+function deleteBook(id) {
+
+    const book =
+        books.find(
+            book =>
+                book.id === id
+        );
+
+
+    if (!book) {
+        return;
+    }
+
+
+    books =
+        books.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveDatabase();
+
+    renderAll();
+
+
+    closeModal(
+        "confirmModal"
+    );
+
+
+    showToast(
+        `"${book.title}" deleted.`
+    );
+
+}
+
+
+/* =========================================================
+   OPEN STOCK MODAL
+========================================================= */
+
+function openStock(
+    id,
+    type
+) {
+
+    if (
+        !hasPermission(
+            "stock"
+        )
+    ) {
+
+        showToast(
+            "You do not have permission to change stock."
+        );
+
+        return;
+
+    }
+
+
+    const book =
+        books.find(
+            book =>
+                book.id === id
+        );
+
+
+    if (!book) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "stockBookId"
+        )
+        .value =
+        book.id;
+
+
+    document
+        .getElementById(
+            "stockType"
+        )
+        .value =
+        type;
+
+
+    document
+        .getElementById(
+            "stockBookName"
+        )
+        .textContent =
+        book.title;
+
+
+    document
+        .getElementById(
+            "currentStockDisplay"
+        )
+        .textContent =
+        book.stock;
+
+
+    document
+        .getElementById(
+            "stockQuantity"
+        )
+        .value =
+        1;
+
+
+    document
+        .getElementById(
+            "stockReason"
+        )
+        .value =
+        "";
+
+
+    const title =
+        document.getElementById(
+            "stockModalTitle"
+        );
+
+
+    const subtitle =
+        document.getElementById(
+            "stockModalSubtitle"
+        );
+
+
+    const display =
+        document.getElementById(
+            "stockTypeDisplay"
+        );
+
+
+    const button =
+        document.getElementById(
+            "confirmStockButton"
+        );
+
+
+    const info =
+        document.getElementById(
+            "stockInfoMessage"
+        );
+
+
+    if (
+        type === "IN"
+    ) {
+
+        title.textContent =
+            "📥 Stock IN";
+
+
+        subtitle.textContent =
+            "Add stock into the inventory.";
+
+
+        display.value =
+            "Stock IN";
+
+
+        button.textContent =
+            "Confirm Stock IN";
+
+
+        button.className =
+            "btn btn-success";
+
+
+        info.style.background =
+            "var(--success-soft)";
+
+
+        info.style.color =
+            "#168554";
+
+
+        info.textContent =
+            "The quantity entered will be added to the current stock.";
+
+    }
+
+    else {
+
+        title.textContent =
+            "📤 Stock OUT";
+
+
+        subtitle.textContent =
+            "Remove stock from the inventory.";
+
+
+        display.value =
+            "Stock OUT";
+
+
+        button.textContent =
+            "Confirm Stock OUT";
+
+
+        button.className =
+            "btn";
+
+
+        info.style.background =
+            "var(--warning-soft)";
+
+
+        info.style.color =
+            "#9a6500";
+
+
+        info.textContent =
+            `You currently have ${book.stock} unit(s) available.`;
+
+    }
+
+
+    openModal(
+        "stockModal"
+    );
+
+}
+
+
+/* =========================================================
+   SAVE STOCK TRANSACTION
+========================================================= */
+
+function saveStockTransaction() {
+
+    if (
+        !hasPermission(
+            "stock"
+        )
+    ) {
+        return;
+    }
+
+
+    const id =
+        Number(
+            document
+                .getElementById(
+                    "stockBookId"
+                )
+                .value
+        );
+
+
+    const type =
+        document
+            .getElementById(
+                "stockType"
+            )
+            .value;
+
+
+    const quantity =
+        Number(
+            document
+                .getElementById(
+                    "stockQuantity"
+                )
+                .value
+        );
+
+
+    const reason =
+        document
+            .getElementById(
+                "stockReason"
+            )
+            .value
+            .trim()
+        ||
+        "-";
+
+
+    if (
+        !Number.isInteger(
+            quantity
+        )
+        ||
+        quantity <= 0
+    ) {
+
+        alert(
+            "Quantity must be a whole number greater than 0."
+        );
+
+        return;
+
+    }
+
+
+    const book =
+        books.find(
+            book =>
+                book.id === id
+        );
+
+
+    if (!book) {
+        return;
+    }
+
+
+    if (
+        type === "OUT"
+    ) {
+
+        if (
+            quantity
+            >
+            Number(book.stock)
+        ) {
+
+            alert(
+                `Not enough stock. Current stock: ${book.stock}`
+            );
+
+            return;
+
+        }
+
+
+        book.stock -=
+            quantity;
+
+    }
+
+    else {
+
+        book.stock +=
+            quantity;
+
+    }
+
+
+    transactions.unshift({
+
+        id:
+            Date.now(),
+
+        date:
+            new Date()
+                .toISOString(),
+
+        bookId:
+            book.id,
+
+        title:
+            book.title,
+
+        type:
+            type,
+
+        quantity:
+            quantity,
+
+        reason:
+            reason,
+
+        userId:
+            currentUser.id,
+
+        user:
+            currentUser.fullName
+
+    });
+
+
+    saveDatabase();
+
+
+    closeModal(
+        "stockModal"
+    );
+
+
+    renderAll();
+
+
+    showToast(
+
+        type === "IN"
+
+            ?
+
+            `${quantity} unit(s) added to "${book.title}".`
+
+            :
+
+            `${quantity} unit(s) removed from "${book.title}".`
+
+    );
+
+}
+
+
+/* =========================================================
+   TRANSACTION HISTORY
+========================================================= */
+
+function renderHistory() {
+
+    const container =
+        document.getElementById(
+            "historyTable"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    if (!transactions.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div>↻</div>
+
+                No stock transactions yet.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>DATE</th>
+
+                    <th>BOOK</th>
+
+                    <th>TYPE</th>
+
+                    <th>QUANTITY</th>
+
+                    <th>REASON</th>
+
+                    <th>USER</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+    `;
+
+
+    transactions.forEach(
+        transaction => {
+
+            const typeClass =
+
+                transaction.type
+                === "IN"
+
+                    ?
+
+                    "badge-success"
+
+                    :
+
+                    "badge-warning";
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+
+                        ${
+                            escapeHTML(
+                                formatDate(
+                                    transaction.date
+                                )
+                            )
+                        }
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="book-name">
+
+                            ${
+                                escapeHTML(
+                                    transaction.title
+                                )
+                            }
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="
+                                badge
+                                ${typeClass}
+                            "
+                        >
+
+                            ${
+                                escapeHTML(
+                                    transaction.type
+                                )
+                            }
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+
+                            ${
+                                Number(
+                                    transaction.quantity
+                                )
+                            }
+
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        ${
+                            escapeHTML(
+                                transaction.reason
+                            )
+                        }
+
+                    </td>
+
+
+                    <td>
+
+                        ${
+                            escapeHTML(
+                                transaction.user
+                                ||
+                                "Unknown"
+                            )
+                        }
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    container.innerHTML =
+        html;
+
+}
+
+
+/* =========================================================
+   OPEN CREATE USER MODAL
+========================================================= */
+
+function openUserModal() {
+
+    if (
+        !hasPermission(
+            "users"
+        )
+    ) {
+
+        showToast(
+            "Only administrators can manage users."
+        );
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "editUserId"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "userModalTitle"
+        )
+        .textContent =
+        "👤 Create User";
+
+
+    document
+        .getElementById(
+            "userModalSubtitle"
+        )
+        .textContent =
+        "Create login credentials for a new user.";
+
+
+    document
+        .getElementById(
+            "saveUserButton"
+        )
+        .textContent =
+        "Create User";
+
+
+    document
+        .getElementById(
+            "userFullName"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "newUsername"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "newUserPassword"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "newUserRole"
+        )
+        .value =
+        "staff";
+
+
+    document
+        .getElementById(
+            "userPasswordLabel"
+        )
+        .textContent =
+        "PASSWORD *";
+
+
+    document
+        .getElementById(
+            "newUserPassword"
+        )
+        .placeholder =
+        "Create a password";
+
+
+    document
+        .getElementById(
+            "accountStatusField"
+        )
+        .style.display =
+        "none";
+
+
+    updateRoleDescription();
+
+
+    openModal(
+        "userModal"
+    );
+
+
+    setTimeout(() => {
+
+        document
+            .getElementById(
+                "userFullName"
+            )
+            .focus();
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   ROLE DESCRIPTION
+========================================================= */
+
+function updateRoleDescription() {
+
+    const role =
+        document
+            .getElementById(
+                "newUserRole"
+            )
+            .value;
+
+
+    const box =
+        document.getElementById(
+            "roleDescription"
+        );
+
+
+    if (
+        role === "admin"
+    ) {
+
+        box.innerHTML = `
+
+            <strong>
+                Administrator Access
+            </strong>
+
+            <br>
+
+            Administrators have full access to
+            dashboard, books, stock movements,
+            transaction history and user management.
+
+        `;
+
+
+        box.style.background =
+            "var(--primary-soft)";
+
+
+        box.style.color =
+            "#5550b9";
+
+    }
+
+
+    else if (
+        role === "staff"
+    ) {
+
+        box.innerHTML = `
+
+            <strong>
+                Staff Access
+            </strong>
+
+            <br>
+
+            Staff can view the dashboard, add and edit
+            books, perform Stock IN/OUT and view history.
+            Staff cannot manage users or delete books.
+
+        `;
+
+
+        box.style.background =
+            "var(--info-soft)";
+
+
+        box.style.color =
+            "#3971d3";
+
+    }
+
+
+    else {
+
+        box.innerHTML = `
+
+            <strong>
+                Viewer Access
+            </strong>
+
+            <br>
+
+            Viewers can only browse and search
+            the book inventory. They cannot change
+            inventory data.
+
+        `;
+
+
+        box.style.background =
+            "#f1f2f5";
+
+
+        box.style.color =
+            "#626575";
+
+    }
+
+}
+
+
+/*
+    Update description when role changes.
+*/
+
+document
+    .getElementById(
+        "newUserRole"
+    )
+    .addEventListener(
+        "change",
+        updateRoleDescription
+    );
+
+
+/* =========================================================
+   SAVE USER
+========================================================= */
+
+function saveUser() {
+
+    if (
+        !hasPermission(
+            "users"
+        )
+    ) {
+        return;
+    }
+
+
+    const editId =
+        document
+            .getElementById(
+                "editUserId"
+            )
+            .value;
+
+
+    const fullName =
+        document
+            .getElementById(
+                "userFullName"
+            )
+            .value
+            .trim();
+
+
+    const username =
+        document
+            .getElementById(
+                "newUsername"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const role =
+        document
+            .getElementById(
+                "newUserRole"
+            )
+            .value;
+
+
+    const password =
+        document
+            .getElementById(
+                "newUserPassword"
+            )
+            .value;
+
+
+    if (
+        !fullName
+        ||
+        !username
+    ) {
+
+        alert(
+            "Please enter the full name and username."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Keep username simple.
+    */
+
+    if (
+        !/^[a-zA-Z0-9._-]+$/
+            .test(username)
+    ) {
+
+        alert(
+            "Username can only contain letters, numbers, dots, underscores and hyphens."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Check duplicate username.
+    */
+
+    const duplicate =
+        users.find(user =>
+
+            user.username
+                .toLowerCase()
+                === username
+
+            &&
+
+            String(user.id)
+                !==
+                String(editId)
+
+        );
+
+
+    if (duplicate) {
+
+        alert(
+            "That username is already being used."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        EDIT USER
+    */
+
+    if (editId) {
+
+        const user =
+            users.find(
+                user =>
+                    String(user.id)
+                    ===
+                    String(editId)
+            );
+
+
+        if (!user) {
+            return;
+        }
+
+
+        const status =
+            document
+                .getElementById(
+                    "userStatus"
+                )
+                .value;
+
+
+        /*
+            Don't allow logged-in admin
+            to deactivate themselves.
+        */
+
+        if (
+            String(user.id)
+            ===
+            String(currentUser.id)
+
+            &&
+
+            status === "inactive"
+        ) {
+
+            alert(
+                "You cannot deactivate the account you are currently using."
+            );
+
+            return;
+
+        }
+
+
+        /*
+            Don't allow logged-in admin
+            to remove own admin role.
+        */
+
+        if (
+            String(user.id)
+            ===
+            String(currentUser.id)
+
+            &&
+
+            role !== "admin"
+        ) {
+
+            alert(
+                "You cannot remove your own administrator access while logged in."
+            );
+
+            return;
+
+        }
+
+
+        user.fullName =
+            fullName;
+
+
+        user.username =
+            username;
+
+
+        user.role =
+            role;
+
+
+        user.status =
+            status;
+
+
+        /*
+            Blank password means keep existing.
+        */
+
+        if (password) {
+
+            if (
+                password.length < 6
+            ) {
+
+                alert(
+                    "Password must contain at least 6 characters."
+                );
+
+                return;
+
+            }
+
+
+            user.password =
+                password;
+
+        }
+
+
+        /*
+            If editing own account,
+            update currentUser too.
+        */
+
+        if (
+            String(user.id)
+            ===
+            String(currentUser.id)
+        ) {
+
+            currentUser =
+                user;
+
+            updateCurrentUserUI();
+
+            applyPermissions();
+
+        }
+
+
+        saveDatabase();
+
+
+        closeModal(
+            "userModal"
+        );
+
+
+        renderUsers();
+
+
+        showToast(
+            `${fullName}'s account updated.`
+        );
+
+
+        return;
+
+    }
+
+
+    /*
+        CREATE NEW USER
+    */
+
+    if (
+        password.length < 6
+    ) {
+
+        alert(
+            "Password must contain at least 6 characters."
+        );
+
+        return;
+
+    }
+
+
+    const newUser = {
+
+        id:
+            Date.now(),
+
+        fullName:
+            fullName,
+
+        username:
+            username,
+
+        password:
+            password,
+
+        role:
+            role,
+
+        status:
+            "active",
+
+        createdAt:
+            new Date()
+                .toISOString(),
+
+        lastLogin:
+            null
+
+    };
+
+
+    users.push(
+        newUser
+    );
+
+
+    saveDatabase();
+
+
+    closeModal(
+        "userModal"
+    );
+
+
+    renderUsers();
+
+
+    showToast(
+        `Account created for ${fullName}.`
+    );
+
+}
+
+
+/* =========================================================
+   RENDER USERS
+========================================================= */
+
+function renderUsers() {
+
+    const container =
+        document.getElementById(
+            "usersTable"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "userCountText"
+        )
+        .textContent =
+
+        `${users.length} registered ${
+            users.length === 1
+                ? "user"
+                : "users"
+        }`;
+
+
+    if (!users.length) {
+
+        container.innerHTML = `
+
+            <div class="empty-state">
+
+                <div>👥</div>
+
+                No registered users.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>USER</th>
+
+                    <th>ROLE</th>
+
+                    <th>STATUS</th>
+
+                    <th>LAST LOGIN</th>
+
+                    <th>ACTION</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+    `;
+
+
+    users.forEach(user => {
+
+        const initial =
+            user.fullName
+                .charAt(0)
+                .toUpperCase();
+
+
+        let roleClass =
+            "badge-info";
+
+
+        if (
+            user.role === "admin"
+        ) {
+
+            roleClass =
+                "badge-success";
+
+        }
+
+
+        const statusClass =
+
+            user.status === "active"
+
+                ?
+
+                "badge-success"
+
+                :
+
+                "badge-danger";
+
+
+        html += `
+
+            <tr>
+
+                <td>
+
+                    <div class="user-cell">
+
+                        <div class="table-avatar">
+
+                            ${
+                                escapeHTML(
+                                    initial
+                                )
+                            }
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="user-name">
+
+                                ${
+                                    escapeHTML(
+                                        user.fullName
+                                    )
+                                }
+
+                            </div>
+
+
+                            <div class="username">
+
+                                @${
+
+                                    escapeHTML(
+                                        user.username
+                                    )
+
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="
+                            badge
+                            ${roleClass}
+                        "
+                    >
+
+                        ${
+                            escapeHTML(
+                                user.role
+                                    .toUpperCase()
+                            )
+                        }
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="
+                            badge
+                            ${statusClass}
+                        "
+                    >
+
+                        ${
+                            user.status
+                            === "active"
+
+                                ?
+
+                                "Active"
+
+                                :
+
+                                "Inactive"
+                        }
+
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    ${
+                        escapeHTML(
+                            formatDate(
+                                user.lastLogin
+                            )
+                        )
+                    }
+
+                </td>
+
+
+                <td>
+
+                    <div class="action-group">
+
+
+                        <button
+                            class="
+                                action-btn
+                                action-edit
+                            "
+                            onclick="
+                                viewUserDetails(
+                                    ${user.id}
+                                )
+                            "
+                        >
+                            View
+                        </button>
+
+
+                        <button
+                            class="
+                                action-btn
+                                action-edit
+                            "
+                            onclick="
+                                editUser(
+                                    ${user.id}
+                                )
+                            "
+                        >
+                            Edit
+                        </button>
+
+
+                        ${
+                            String(user.id)
+                            !==
+                            String(currentUser.id)
+
+                            ?
+
+                            `
+
+                            <button
+                                class="
+                                    action-btn
+                                    action-delete
+                                "
+                                onclick="
+                                    requestDeleteUser(
+                                        ${user.id}
+                                    )
+                                "
+                            >
+                                Delete
+                            </button>
+
+                            `
+
+                            :
+
+                            ""
+                        }
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    container.innerHTML =
+        html;
+
+}
+
+
+/* =========================================================
+   EDIT USER
+========================================================= */
+
+function editUser(id) {
+
+    if (
+        !hasPermission(
+            "users"
+        )
+    ) {
+        return;
+    }
+
+
+    const user =
+        users.find(
+            user =>
+                user.id === id
+        );
+
+
+    if (!user) {
+        return;
+    }
+
+
+    document
+        .getElementById(
+            "editUserId"
+        )
+        .value =
+        user.id;
+
+
+    document
+        .getElementById(
+            "userModalTitle"
+        )
+        .textContent =
+        "✏️ Edit User";
+
+
+    document
+        .getElementById(
+            "userModalSubtitle"
+        )
+        .textContent =
+        "Update account details and access permissions.";
+
+
+    document
+        .getElementById(
+            "saveUserButton"
+        )
+        .textContent =
+        "Save Changes";
+
+
+    document
+        .getElementById(
+            "userFullName"
+        )
+        .value =
+        user.fullName;
+
+
+    document
+        .getElementById(
+            "newUsername"
+        )
+        .value =
+        user.username;
+
+
+    document
+        .getElementById(
+            "newUserRole"
+        )
+        .value =
+        user.role;
+
+
+    document
+        .getElementById(
+            "newUserPassword"
+        )
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "userPasswordLabel"
+        )
+        .textContent =
+        "NEW PASSWORD";
+
+
+    document
+        .getElementById(
+            "newUserPassword"
+        )
+        .placeholder =
+        "Leave blank to keep current password";
+
+
+    document
+        .getElementById(
+            "accountStatusField"
+        )
+        .style.display =
+        "block";
+
+
+    document
+        .getElementById(
+            "userStatus"
+        )
+        .value =
+        user.status;
+
+
+    updateRoleDescription();
+
+
+    openModal(
+        "userModal"
+    );
+
+}
+
+
+/* =========================================================
+   VIEW USER DETAILS
+========================================================= */
+
+function viewUserDetails(id) {
+
+    if (
+        !hasPermission(
+            "users"
+        )
+    ) {
+        return;
+    }
+
+
+    const user =
+        users.find(
+            user =>
+                user.id === id
+        );
+
+
+    if (!user) {
+        return;
+    }
+
+
+    const transactionsByUser =
+        transactions.filter(
+            transaction =>
+                String(
+                    transaction.userId
+                )
+                ===
+                String(
+                    user.id
+                )
+        ).length;
+
+
+    document
+        .getElementById(
+            "userDetailsContent"
+        )
+        .innerHTML = `
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:14px;
+                    padding:16px;
+                    background:#f8f8fc;
+                    border:1px solid var(--border);
+                    border-radius:12px;
+                    margin-bottom:18px;
+                "
+            >
+
+                <div
+                    class="table-avatar"
+                    style="
+                        width:45px;
+                        height:45px;
+                        font-size:15px;
+                    "
+                >
+
+                    ${
+                        escapeHTML(
+                            user.fullName
+                                .charAt(0)
+                                .toUpperCase()
+                        )
+                    }
+
+                </div>
+
+
+                <div>
+
+                    <strong
+                        style="
+                            font-size:14px;
+                        "
+                    >
+
+                        ${
+                            escapeHTML(
+                                user.fullName
+                            )
+                        }
+
+                    </strong>
+
+
+                    <div
+                        style="
+                            margin-top:4px;
+                            color:var(--muted);
+                            font-size:10px;
+                        "
+                    >
+
+                        @${
+
+                            escapeHTML(
+                                user.username
+                            )
+
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                style="
+                    display:grid;
+                    grid-template-columns:1fr 1fr;
+                    gap:12px;
+                "
+            >
+
+                ${detailBox(
+                    "ROLE",
+                    user.role
+                        .toUpperCase()
+                )}
+
+
+                ${detailBox(
+                    "STATUS",
+                    user.status
+                        .toUpperCase()
+                )}
+
+
+                ${detailBox(
+                    "LAST LOGIN",
+                    formatDate(
+                        user.lastLogin
+                    )
+                )}
+
+
+                ${detailBox(
+                    "TRANSACTIONS",
+                    transactionsByUser
+                )}
+
+
+                ${detailBox(
+                    "ACCOUNT CREATED",
+                    formatDate(
+                        user.createdAt
+                    )
+                )}
+
+            </div>
+
+        `;
+
+
+    openModal(
+        "userDetailsModal"
+    );
+
+}
+
+
+/* =========================================================
+   USER DETAIL BOX
+========================================================= */
+
+function detailBox(
+    label,
+    value
+) {
+
+    return `
+
+        <div
+            style="
+                padding:13px;
+                border:1px solid var(--border);
+                border-radius:10px;
+            "
+        >
+
+            <div
+                style="
+                    color:var(--muted);
+                    font-size:8px;
+                    font-weight:850;
+                    letter-spacing:.5px;
+                    margin-bottom:5px;
+                "
+            >
+
+                ${escapeHTML(label)}
+
+            </div>
+
+
+            <strong
+                style="
+                    font-size:11px;
+                "
+            >
+
+                ${escapeHTML(value)}
+
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   DELETE USER REQUEST
+========================================================= */
+
+function requestDeleteUser(id) {
+
+    if (
+        !hasPermission(
+            "users"
+        )
+    ) {
+        return;
+    }
+
+
+    const user =
+        users.find(
+            user =>
+                user.id === id
+        );
+
+
+    if (!user) {
+        return;
+    }
+
+
+    if (
+        String(user.id)
+        ===
+        String(currentUser.id)
+    ) {
+
+        alert(
+            "You cannot delete the account you are currently using."
+        );
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            "confirmTitle"
+        )
+        .textContent =
+        "Delete User?";
+
+
+    document
+        .getElementById(
+            "confirmMessage"
+        )
+        .textContent =
+        `Delete ${user.fullName}'s account? Their existing stock transaction history will remain.`;
+
+
+    pendingDeleteAction =
+        function () {
+
+            deleteUser(
+                id
+            );
+
+        };
+
+
+    openModal(
+        "confirmModal"
+    );
+
+}
+
+
+/* =========================================================
+   DELETE USER
+========================================================= */
+
+function deleteUser(id) {
+
+    const user =
+        users.find(
+            user =>
+                user.id === id
+        );
+
+
+    if (!user) {
+        return;
+    }
+
+
+    users =
+        users.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    saveDatabase();
+
+
+    renderUsers();
+
+
+    closeModal(
+        "confirmModal"
+    );
+
+
+    showToast(
+        `${user.fullName}'s account deleted.`
+    );
+
+}
+
+
+/* =========================================================
+   CONFIRM DELETE BUTTON
+========================================================= */
+
+document
+    .getElementById(
+        "confirmDeleteButton"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            if (
+                typeof pendingDeleteAction
+                ===
+                "function"
+            ) {
+
+                const action =
+                    pendingDeleteAction;
+
+
+                pendingDeleteAction =
+                    null;
+
+
+                action();
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   MODAL FUNCTIONS
+========================================================= */
+
+function openModal(id) {
+
+    const modal =
+        document.getElementById(
+            id
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.style.display =
+        "flex";
+
+}
+
+
+function closeModal(id) {
+
+    const modal =
+        document.getElementById(
+            id
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.style.display =
+        "none";
+
+
+    if (
+        id === "confirmModal"
+    ) {
+
+        pendingDeleteAction =
+            null;
+
+    }
+
+}
+
+
+/* =========================================================
+   CLICK OUTSIDE MODAL TO CLOSE
+========================================================= */
+
+document
+    .querySelectorAll(
+        ".modal-bg"
+    )
+    .forEach(modal => {
+
+        modal.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target
+                    === modal
+                ) {
+
+                    modal.style.display =
+                        "none";
+
+
+                    if (
+                        modal.id
+                        ===
+                        "confirmModal"
+                    ) {
+
+                        pendingDeleteAction =
+                            null;
+
+                    }
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   ESC KEY CLOSES MODALS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key
+            === "Escape"
+        ) {
+
+            document
+                .querySelectorAll(
+                    ".modal-bg"
+                )
+                .forEach(modal => {
+
+                    modal.style.display =
+                        "none";
+
+                });
+
+
+            pendingDeleteAction =
+                null;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   RENDER EVERYTHING
+========================================================= */
+
+function renderAll() {
+
+    renderDashboard();
+
+    renderBooks();
+
+    renderHistory();
+
+    renderUsers();
+
+}
+
+
+/* =========================================================
+   INITIAL SAVE
+========================================================= */
+
+saveDatabase();
+
+
+/* =========================================================
+   OPTIONAL:
+   PRE-FILL REMEMBERED USERNAME
+========================================================= */
+
+const rememberedUsername =
+    localStorage.getItem(
+        "bookstock_remember_username"
+    );
+
+
+if (
+    rememberedUsername
+) {
+
+    document
+        .getElementById(
+            "loginUsername"
+        )
+        .value =
+        rememberedUsername;
+
+
+    document
+        .getElementById(
+            "rememberLogin"
+        )
+        .checked =
+        true;
+
+}
+
+
+/*
+    Save username when login button is clicked.
+*/
+
+document
+    .querySelector(
+        ".login-button"
+    )
+    .addEventListener(
+        "click",
+        function () {
+
+            const remember =
+                document
+                    .getElementById(
+                        "rememberLogin"
+                    )
+                    .checked;
+
+
+            const username =
+                document
+                    .getElementById(
+                        "loginUsername"
+                    )
+                    .value
+                    .trim();
+
+
+            if (
+                remember
+                &&
+                username
+            ) {
+
+                localStorage.setItem(
+                    "bookstock_remember_username",
+                    username
+                );
+
+            }
+
+            else {
+
+                localStorage.removeItem(
+                    "bookstock_remember_username"
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
