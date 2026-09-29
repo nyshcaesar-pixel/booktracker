@@ -3853,6 +3853,8 @@ tbody tr:hover {
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
 /* =========================================================
@@ -3862,7 +3864,18 @@ tbody tr:hover {
 
 
 /* =========================================================
-   DATABASE / LOCAL STORAGE
+   SUPABASE CONNECTION
+========================================================= */
+
+const SUPABASE_URL = "https://wxilqirgcdnkyeawabko.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_flEOHJhq2ZmKjOc5ip9HaA_BfmLR_Al";
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+/* =========================================================
+   DATABASE / LOCAL STORAGE (local cache only)
 ========================================================= */
 
 const STORAGE_KEYS = {
@@ -8315,6 +8328,295 @@ document
 
         }
     );
+
+
+/* =========================================================
+   SUPABASE ONLINE SYNC OVERRIDES
+   These functions intentionally override the earlier local-only
+   versions while keeping the existing UI/design intact.
+========================================================= */
+
+function usernameToEmail(username) {
+    return `${String(username).trim().toLowerCase()}@bookstock.local`;
+}
+
+async function loadSupabaseData(includeTransactions = true) {
+    const { data: bookRows, error: booksError } = await supabaseClient
+        .from("books")
+        .select("*")
+        .order("id", { ascending: false });
+
+    if (booksError) {
+        console.error("Books load error:", booksError);
+        showToast("Could not load online books.");
+        return false;
+    }
+
+    books = (bookRows || []).map(row => ({
+        id: Number(row.id),
+        title: row.title,
+        isbn: row.isbn || "",
+        category: row.category || "Uncategorized",
+        location: row.location || "-",
+        stock: Number(row.stock || 0),
+        minimum: Number(row.minimum_stock || 0)
+    }));
+
+    if (includeTransactions) {
+        const { data: transactionRows, error: transactionError } = await supabaseClient
+            .from("transactions")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (!transactionError) {
+            transactions = (transactionRows || []).map(row => ({
+                id: Number(row.id),
+                date: row.created_at,
+                bookId: row.book_id ? Number(row.book_id) : null,
+                title: row.book_title,
+                type: row.type,
+                quantity: Number(row.quantity),
+                reason: row.reason || "-",
+                userId: row.user_id,
+                user: row.user_name || "Unknown"
+            }));
+        } else {
+            console.error("Transactions load error:", transactionError);
+        }
+    } else {
+        transactions = [];
+    }
+
+    localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(books));
+    localStorage.setItem(STORAGE_KEYS.transactions, JSON.stringify(transactions));
+    return true;
+}
+
+async function saveDatabase() {
+    // Keep a local cache for faster rendering / remembered state.
+    localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(books));
+    localStorage.setItem(STORAGE_KEYS.users, JSON.stringify(users));
+    localStorage.setItem(STORAGE_KEYS.transactions, JSON.stringify(transactions));
+
+    const { data: sessionData } = await supabaseClient.auth.getSession();
+    if (!sessionData?.session) return;
+
+    if (books.length) {
+        const bookPayload = books.map(book => ({
+            id: Number(book.id),
+            title: book.title,
+            isbn: book.isbn || null,
+            category: book.category || null,
+            location: book.location || null,
+            stock: Number(book.stock || 0),
+            minimum_stock: Number(book.minimum || 0),
+            updated_at: new Date().toISOString()
+        }));
+
+        const { error } = await supabaseClient
+            .from("books")
+            .upsert(bookPayload, { onConflict: "id" });
+        if (error) console.error("Book sync error:", error);
+    }
+
+    if (transactions.length) {
+        const transactionPayload = transactions.map(tx => ({
+            id: Number(tx.id),
+            book_id: tx.bookId ? Number(tx.bookId) : null,
+            book_title: tx.title,
+            type: tx.type,
+            quantity: Number(tx.quantity),
+            reason: tx.reason || null,
+            user_id: (typeof tx.userId === "string" && tx.userId.includes("-")) ? tx.userId : null,
+            user_name: tx.user || null,
+            created_at: tx.date || new Date().toISOString()
+        }));
+
+        const { error } = await supabaseClient
+            .from("transactions")
+            .upsert(transactionPayload, { onConflict: "id" });
+        if (error) console.error("Transaction sync error:", error);
+    }
+}
+
+async function signupUser() {
+    const fullName = document.getElementById("signupFullName").value.trim();
+    const username = document.getElementById("signupUsername").value.trim().toLowerCase();
+    const password = document.getElementById("signupPassword").value;
+    const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+    if (!fullName || !username || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+        return;
+    }
+    if (username.length < 3 || !/^[a-zA-Z0-9._-]+$/.test(username)) {
+        alert("Username must be at least 3 characters and use only letters, numbers, dots, underscores or hyphens.");
+        return;
+    }
+    if (password.length < 6) {
+        alert("Password must contain at least 6 characters.");
+        return;
+    }
+    if (password !== confirmPassword) {
+        alert("Password and Confirm Password do not match.");
+        return;
+    }
+
+    const email = usernameToEmail(username);
+    const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName, username } }
+    });
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    if (!data.session) {
+        alert("Account created, but Supabase email confirmation is enabled. Disable Confirm email in Supabase Auth settings for username-only BookStock accounts, then sign up again.");
+        return;
+    }
+
+    const { error: profileError } = await supabaseClient
+        .from("profiles")
+        .insert({
+            id: data.user.id,
+            full_name: fullName,
+            username,
+            role: "staff",
+            status: "active"
+        });
+
+    if (profileError) {
+        console.error(profileError);
+        alert("Account was created but the profile could not be saved. Run the BookStock Supabase setup SQL provided with this file.");
+        return;
+    }
+
+    await supabaseClient.auth.signOut();
+    closeModal("signupModal");
+    document.getElementById("loginUsername").value = username;
+    document.getElementById("loginPassword").value = "";
+    showToast("Account created successfully! You can now sign in.");
+}
+
+async function userLogin() {
+    const username = document.getElementById("loginUsername").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+    const errorBox = document.getElementById("loginError");
+    errorBox.style.display = "none";
+
+    if (!username || !password) {
+        errorBox.textContent = "Please enter your username and password.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email: usernameToEmail(username),
+        password
+    });
+
+    if (error || !data.user) {
+        errorBox.textContent = "Incorrect username or password.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    const { data: profile, error: profileError } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", data.user.id)
+        .single();
+
+    if (profileError || !profile) {
+        await supabaseClient.auth.signOut();
+        errorBox.textContent = "Your BookStock profile could not be loaded.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    if (profile.status !== "active") {
+        await supabaseClient.auth.signOut();
+        errorBox.textContent = "This account has been deactivated. Please contact an administrator.";
+        errorBox.style.display = "block";
+        return;
+    }
+
+    currentUser = {
+        id: data.user.id,
+        fullName: profile.full_name,
+        username: profile.username,
+        role: profile.role,
+        status: profile.status,
+        lastLogin: new Date().toISOString()
+    };
+
+    await loadSupabaseData(true);
+    enterApplication();
+    showToast(`Welcome back, ${currentUser.fullName}!`);
+}
+
+async function viewerLogin() {
+    await supabaseClient.auth.signOut();
+    currentUser = {
+        id: "viewer",
+        fullName: "Guest Viewer",
+        username: "viewer",
+        role: "viewer",
+        status: "active"
+    };
+    await loadSupabaseData(false);
+    enterApplication();
+    showToast("You are browsing as Viewer.");
+}
+
+async function logout() {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    document.getElementById("app").style.display = "none";
+    document.getElementById("loginScreen").style.display = "flex";
+    document.getElementById("loginPassword").value = "";
+}
+
+async function deleteBook(id) {
+    const book = books.find(book => book.id === id);
+    if (!book) return;
+
+    const { error } = await supabaseClient.from("books").delete().eq("id", id);
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    books = books.filter(item => item.id !== id);
+    localStorage.setItem(STORAGE_KEYS.books, JSON.stringify(books));
+    closeModal("confirmModal");
+    renderAll();
+    showToast(`"${book.title}" deleted.`);
+}
+
+// Keep all open devices fresh. When books or transactions change in Supabase,
+// reload the shared data and repaint the current screen.
+function startRealtimeSync() {
+    supabaseClient
+        .channel("bookstock-live-sync")
+        .on("postgres_changes", { event: "*", schema: "public", table: "books" }, async () => {
+            await loadSupabaseData(currentUser && currentUser.role !== "viewer");
+            if (currentUser) renderAll();
+        })
+        .on("postgres_changes", { event: "*", schema: "public", table: "transactions" }, async () => {
+            if (currentUser && currentUser.role !== "viewer") {
+                await loadSupabaseData(true);
+                renderAll();
+            }
+        })
+        .subscribe();
+}
+
+startRealtimeSync();
 
 </script>
 
